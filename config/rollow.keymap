@@ -85,7 +85,7 @@
         //│  Q       │  J       │  V       │  D       │  K       │   │  X       │  H       │ / ?      │ , <      │ . >      │
             &kp Z      &kp X      &kp C      &kp V      &kp B          &kp N      &kp M      &kp FSLH  &kp COMMA    &kp DOT
         //╰──────────┴──────────┴──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┴──────────┴──────────╯
-                                             MO(NUM)   &kp SPACE     &skq LSHIFT  MO(SYM)
+                                   XXX          MO(NUM)   &kp SPACE     &skq LSHIFT  MO(SYM) XXX
         //                                 ╰──────────┴──────────╯   ╰──────────┴──────────╯
             >;
         };
@@ -102,7 +102,7 @@
         //│ UNDO     │  CUT     │  COPY    │  PASTE   │  =       │   │  -       │  4       │ 5        │ 6        │  /       │
             &kp LC(Z)  &kp LC(X)  &kp LC(C)  &kp LC(V)  &kp EQUAL      &kp MINUS   &kp N4     &kp N5     &kp N6     &kp FSLH
         //╰──────────┴──────────┴──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┴──────────┴──────────╯
-                                             &trans     &trans        &trans     &trans
+                                            XXX &trans     &trans        &trans     &trans XXX
         //                                 ╰──────────┴──────────╯   ╰──────────┴──────────╯
             >;
         };
@@ -119,7 +119,7 @@
         //│   ~      │    ;     │     @    │    {     │     }     │  │          │    <-    │  TAB     │  _       │   enter  │
             &kp TILDE  &kp SEMI     &kp AT  &kp LBRC   &kp RBRC         &trans   &kp BSPC   &kp TAB    &kp UNDER   &kp ENTER
         //╰──────────┴──────────┴──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┴──────────┴──────────╯
-                                             &trans     &trans         &trans     &trans
+                                          XXX   &trans     &trans         &trans     &trans XXX
         //                                 ╰──────────┴──────────╯   ╰──────────┴──────────╯
             >;
         };
@@ -136,7 +136,7 @@
         //│          │          │          │ CLEAR BT │PROFILE 2 │   │          │          │          │          │          │
             &kp LC(Z)  &kp LC(X)  &kp LC(C)  &kp LC(V) &trans    &trans   &kp BSPC   &kp TAB      &trans    &kp ENTER
         //╰──────────┴──────────┴──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┴──────────┴──────────╯
-                                             &trans     &trans         &trans     &trans
+                                          XXX   &trans     &trans         &trans     &trans XXX
         //                                 ╰──────────┴──────────╯   ╰──────────┴──────────╯
             >;
         };
