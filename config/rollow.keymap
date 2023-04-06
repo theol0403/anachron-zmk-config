@@ -27,6 +27,11 @@
 #define STICKY_KEY_TIMEOUT 60000
 
 / {
+    
+    chosen {
+        zmk,matrix_transform = &five_column_transform;
+    };
+
     behaviors {
         nk: not_so_sticky_key {
             compatible = "zmk,behavior-hold-tap";
