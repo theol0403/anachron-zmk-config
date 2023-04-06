@@ -6,6 +6,7 @@
 #include <dt-bindings/zmk/bt.h>
 
 #define XXX &none
+#define TODO XXX
 #define ___ &trans
 
 #define BASE 0
@@ -16,25 +17,17 @@
 #define SK(KEY) &nk KEY KEY
 #define MO(LAYER) &mo_tap LAYER F24
 
+#define UNDO &kp LC(Z)
+#define CUT &kp LC(X)
+#define COPY &kp LC(C)
+#define PASTE &kp LC(V)
+#define REDO &kp LC(Y)
+
 // Keep sticky keys active for a long time so they effectively do not time out
 #define STICKY_KEY_TIMEOUT 60000
 
-// Home row mods macro
-#define HRML(k1,k2,k3,k4) &ht LSHFT k1  &ht LALT k2  &ht LCTRL k3  &ht LGUI k4
-#define HRMR(k1,k2,k3,k4) &ht RGUI k1  &ht RCTRL k2  &ht RALT k3  &ht RSHFT k4
-
 / {
     behaviors {
-        ht: hold_tap {
-            label = "hold_tap";
-            compatible = "zmk,behavior-hold-tap";
-            #binding-cells = <2>;
-            flavor = "tap-preferred";
-            tapping-term-ms = <220>;
-            quick-tap-ms = <150>;
-            global-quick-tap;
-            bindings = <&kp>, <&kp>;
-        };
         nk: not_so_sticky_key {
             compatible = "zmk,behavior-hold-tap";
             label = "NOT_SO_STICKY_KEY";
@@ -65,79 +58,71 @@
 
     conditional_layers {
         compatible = "zmk,conditional-layers";
-        tri_layer {
+        util_layer {
             if-layers = <1 2>;
             then-layer = <3>;
         };
     };
+    
+    // TODO:
+    // - Encoders:
+    //   - scroll operation
+    //   - button press
+    // - OLED
+    // - Numlock
+    //   - Tapdance
+    //   - Combo
+    //   - Fn key undoes numlock
+    // - Combos
+    //   - action keys?
+    //   - speed up modifiers
+    // - Caps word
+    // - Improved shortcut commands
+    // - Split up config into files
+    // - Switch to nodefree config
+    // - Fix sticky keys for cadding (use the wrapping around behavior)
+    // - Layer features
+    //   - Repeat key
+    //   - Fn num layer
+    //   - Alt tab
+    // - Figure out where to put in symbol/util layer empty space (caps? caps word?)
+    // - Add num+fn+left hand BT switcher
+    
 
     keymap {
         compatible = "zmk,keymap";
         default_layer {
             bindings = <
-        //╭──────────┬──────────┬──────────┬──────────┬──────────╮   ╭──────────┬──────────┬──────────┬──────────┬──────────╮
-        //│  W       │  L       │  Y       │  P       │  B       │   │  Z       │  F       │  O       │  U       │  P       │
-      XXX      &kp Q      &kp W      &kp E      &kp R      &kp T          &kp Y      &kp U      &kp I      &kp O      &kp P XXX
-        //├──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┤
-        //│  C       │  R       │  S       │  T       │  G       │   │  M       │  N       │  E       │  I       │  A       │
-        XXX    &kp A       &kp S      &kp D       &kp F     &kp G          &kp H      &kp H       &kp K     &kp L       &kp SEMI XXX
-        //├──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┤
-        //│  Q       │  J       │  V       │  D       │  K       │   │  X       │  H       │ / ?      │ , <      │ . >      │
-          XXX  &kp Z      &kp X      &kp C      &kp V      &kp B          &kp N      &kp M      &kp FSLH  &kp COMMA    &kp DOT XXX
-        //╰──────────┴──────────┴──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┴──────────┴──────────╯
-                                   XXX          MO(NUM)   &kp SPACE     &skq LSHIFT  MO(SYM) XXX
-        //                                 ╰──────────┴──────────╯   ╰──────────┴──────────╯
+            &kp B   &kp L   &kp D   &kp W    &kp Z        &kp QUOTE  &kp F    &kp O      &kp U     &kp J 
+            &kp N   &kp R   &kp T   &kp S    &kp G        &kp Y      &kp H    &kp A      &kp E     &kp I 
+            &kp Q   &kp X   &kp M   &kp C    &kp B        &kp K      &kp P    &kp COMMA  &kp DOT   &kp FSLH 
+                            XXX     MO(NUM)  &kp LSHIFT  &skq SPACE  MO(SYM)  XXX
             >;
         };
 
-        left_layer {
+        num_layer {
             bindings = <
-        //╭──────────┬──────────┬──────────┬──────────┬──────────╮   ╭──────────┬──────────┬──────────┬──────────┬──────────╮
-        //│ SLCT ALL │  #       │  $       │  %       │  ^       │   │ +        │ 7        │ 8        │ 9        │  *       │
-      XXX      &kp LC(A)  &kp HASH  &kp DLLR  &kp PRCNT   &kp CARET       &kp PLUS   &kp N7     &kp N8     &kp N9    &kp ASTRK XXX
-        //├──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┤
-        //│ CTRL.    │  ALT     │  CMD     │  SHIFT   │   FIND   │   │ 3.       │ 0.       │ 1.       │ 2.       │     .    │
-          XXX  &nk LCTRL LCTRL  &nk LALT LALT  &nk LCMD LCMD  &nk LSHFT LSHFT &kp LC(F)      &kp N3     &kp N0    &kp N1      &kp N2     &kp DOT XXX
-        //├──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┤
-        //│ UNDO     │  CUT     │  COPY    │  PASTE   │  =       │   │  -       │  4       │ 5        │ 6        │  /       │
-          XXX  &kp LC(Z)  &kp LC(X)  &kp LC(C)  &kp LC(V)  &kp EQUAL      &kp MINUS   &kp N4     &kp N5     &kp N6     &kp FSLH XXX
-        //╰──────────┴──────────┴──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┴──────────┴──────────╯
-                                            XXX &trans     &trans        &trans     &trans XXX
-        //                                 ╰──────────┴──────────╯   ╰──────────┴──────────╯
+            TODO      &kp HASH  &kp DLLR   &kp PRCNT &kp CARET   &kp PLUS   &kp N7  &kp N8  &kp N9  &kp ASTRK 
+            SK(LGUI)  SK(LALT)  SK(LCTRL)  SK(LSHFT) &kp LGUI    &kp N3     &kp N0  &kp N1  &kp N2  &kp EQUAL 
+            UNDO      CUT       COPY       PASTE     REDO        &kp MINUS  &kp N4  &kp N5  &kp N6  &kp FSLH 
+                                           XXX       ___         ___        TODO    ___     XXX
+            >;
+        };
+        sym_layer {
+            bindings = <
+            &kp GRAVE  &kp AMPS   &kp PIPE  &kp LBKT  &kp RBKT   &kp HOME  &kp PG_DN  &kp PG_UP  &kp END    &kp ESC 
+            &kp BSLH   &kp COLON  &kp EXCL  &kp LPAR  &kp RPAR   &kp LEFT  &kp DOWN   &kp UP     &kp RIGHT  &kp DEL 
+            &kp TILDE  &kp SEMI   &kp AT    &kp LBRC  &kp RBRC   TODO      &kp BSPC   &kp TAB    &kp XXX    &kp ENTER 
+                                            XXX       ___        ___       ___        ___        XXX
             >;
         };
 
-        right_layer {
+        util_layer {
             bindings = <
-        //╭──────────┬──────────┬──────────┬──────────┬──────────╮   ╭──────────┬──────────┬──────────┬──────────┬──────────╮
-        //│   `      │  &       │  |       │  [       │   ]      │   │  home    │  pg dn   │  pg up   │  end     │  esc     │
-      XXX      &kp GRAVE  &kp AMPS   &kp PIPE   &kp LBKT   &kp RBKT        &kp HOME  &kp PG_DN  &kp PG_UP   &kp END   &kp ESC XXX
-        //├──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┤
-        //│  \       │  :       │  !       │  (       │  )       │   │  left    │  down    │  up      │  right   │  ->      │
-          XXX  &kp BSLH   &kp COLON  &kp EXCL   &kp LPAR   &kp RPAR       &kp LEFT  &kp DOWN   &kp UP      &kp RIGHT   &kp DEL XXX
-        //├──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┤
-        //│   ~      │    ;     │     @    │    {     │     }     │  │          │    <-    │  TAB     │  _       │   enter  │
-          XXX  &kp TILDE  &kp SEMI     &kp AT  &kp LBRC   &kp RBRC         &trans   &kp BSPC   &kp TAB    &kp UNDER   &kp ENTER XXX
-        //╰──────────┴──────────┴──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┴──────────┴──────────╯
-                                          XXX   &trans     &trans         &trans     &trans XXX
-        //                                 ╰──────────┴──────────╯   ╰──────────┴──────────╯
-            >;
-        };
-
-        tri_layer {
-            bindings = <
-        //╭──────────┬──────────┬──────────┬──────────┬──────────╮   ╭──────────┬──────────┬──────────┬──────────┬──────────╮
-        //│ RESET    │          │          │          │PROFILE 0 │   │          │          │          │          │  RESET   │
-      XXX      &kp LC(A) &kp C_MUTE &kp C_VOL_DN &kp C_VOL_UP &reset     &kp HOME  &kp PG_DN  &kp PG_UP   &kp END   &kp ESC XXX
-        //├──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┤
-        //│BOOTLOADER│          │          │          │PROFILE 1 │   │          │          │          │          │BOOTLOADER│
-        XXX  &nk LCTRL LCTRL  &nk LALT LALT  &nk LCMD LCMD  &nk LSHFT LSHFT &kp LC(F)    &kp LEFT  &kp DOWN   &kp UP      &kp RIGHT   &kp DEL XXX
-        //├──────────┼──────────┼──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┼──────────┼──────────┤
-        //│          │          │          │ CLEAR BT │PROFILE 2 │   │          │          │          │          │          │
-          XXX  &kp LC(Z)  &kp LC(X)  &kp LC(C)  &kp LC(V) &trans    &trans   &kp BSPC   &kp TAB      &trans    &kp ENTER XXX
-        //╰──────────┴──────────┴──────────┼──────────┼──────────┤   ├──────────┼──────────┼──────────┴──────────┴──────────╯
-                                          XXX   &trans     &trans         &trans     &trans XXX
-        //                                 ╰──────────┴──────────╯   ╰──────────┴──────────╯
+            TODO      &kp C_MUTE &kp C_VOL_DN &kp C_VOL_UP  &reset     &kp HOME  &kp PG_DN  &kp PG_UP   &kp END    &kp ESC 
+            SK(LGUI)  SK(LALT)  SK(LCTRL)     SK(LSHFT)     &kp LGUI   &kp LEFT  &kp DOWN   &kp UP      &kp RIGHT  &kp DEL 
+            UNDO      CUT       COPY          PASTE         REDO       ___       &kp BSPC   &kp TAB     ___        &kp ENTER 
+                                              XXX           ___        ___       ___        ___         XXX
             >;
         };
     };
