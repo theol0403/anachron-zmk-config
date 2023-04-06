@@ -119,10 +119,10 @@
 
         util_layer {
             bindings = <
-            TODO      &kp C_MUTE &kp C_VOL_DN &kp C_VOL_UP  &reset     &kp HOME  &kp PG_DN  &kp PG_UP   &kp END    &kp ESC 
-            SK(LGUI)  SK(LALT)  SK(LCTRL)     SK(LSHFT)     &kp LGUI   &kp LEFT  &kp DOWN   &kp UP      &kp RIGHT  &kp DEL 
-            S_UNDO    S_CUT     S_COPY        S_PASTE       S_REDO     ___       &kp BSPC   &kp TAB     ___        &kp ENTER 
-                                              XXX           ___        ___       ___        ___         XXX
+            TODO      &kp C_MUTE &kp C_VOL_DN &kp C_VOL_UP  &bootloader &kp HOME  &kp PG_DN  &kp PG_UP   &kp END    &kp ESC 
+            SK(LGUI)  SK(LALT)  SK(LCTRL)     SK(LSHFT)     &kp LGUI    &kp LEFT  &kp DOWN   &kp UP      &kp RIGHT  &kp DEL 
+            S_UNDO    S_CUT     S_COPY        S_PASTE       S_REDO      ___       &kp BSPC   &kp TAB     ___        &kp ENTER 
+                                              XXX           ___         ___       ___        ___         XXX
             >;
         };
     };
