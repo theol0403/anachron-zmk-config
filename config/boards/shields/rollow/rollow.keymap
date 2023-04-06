@@ -1,0 +1,110 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+
+#define COL   0
+#define COLL  1
+#define COLR  2
+
+/ {
+        behaviors {
+        tp: tap_mods {
+            compatible = "zmk,behavior-hold-tap";
+            label = "TAP_MODS";
+            #binding-cells = <2>;
+            tapping_term_ms = <200>;
+            flavor = "tap-preferred";
+            bindings = <&kp>, <&kp>;
+                };
+         };
+
+
+        keymap {
+                compatible = "zmk,keymap";
+
+                default_layer {
+/* Default
+ * .-----------------------------------------.                    .-----------------------------------------.
+ * | TAB  |   Q  |   W  |   E  |   R  |   T  |                    |   Y  |   U  |   I  |   O  |   P  | BKSP |
+ * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
+ * | CTRL |   A  |   S  |   D  |   F  |   G  |                    |   H  |   J  |   K  |   L  |   ;  |   '  |
+ * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
+ * | SHFT |   Z  |   X  |   C  |   V  |   B  |-------.    .-------|   N  |   M  |   ,  |   .  |   /  | SHFT |
+ * '-----------------------------------------/       /     \      \-----------------------------------------'
+ *                          |  GUI |  LWR | / Space /       \ Space\  |TT(RS)| Tab  |
+ *                          |      |      |/       /         \      \ |      |      |
+ *                          '-------------''------'           '------''-------------'
+ *
+ *   Encoder Left: Up <-> Down
+ *   Encoder Right: Left <-> Right
+ */
+                        bindings = <
+   &kp TAB   &kp Q &kp W &kp E &kp R &kp T   &kp Y &kp U  &kp I     &kp O   &kp P    &kp BSPC
+   &kp LCTRL &kp A &kp S &kp D &kp F &kp G   &kp H &kp J  &kp K     &kp L   &kp SEMI &kp SQT
+   &kp LSHFT &kp Z &kp X &kp C &kp V &kp B   &kp N &kp M  &kp COMMA &kp DOT &kp FSLH &kp RSHFT
+                  &kp LGUI &mo 1 &kp SPACE   &kp RET &mo 2 &kp RALT
+                        >;
+
+                        sensor-bindings = <&inc_dec_kp DOWN UP &inc_dec_kp RIGHT LEFT>;
+                };
+
+                lower_layer {
+/* LOWER
+ * .-----------------------------------------.                    .-----------------------------------------.
+ * |  ESC |   1  |  2   |  3   |  4   |  5   |                    |   6  |   7  |   8  |   9  |   0  | BKSP |
+ * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
+ * | BTCLR| BT1  | BT2  | BT3  | BT4  | BT5  |                    |  LFT |  DWN |   UP |  RGT |      |      |
+ * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
+ * | SHFT |      |      |      |      |      |-------.    .-------|      |      |      |      |      |      |
+ * '-----------------------------------------/       /     \      \-----------------------------------------'
+ *                          |  GUI |      | / Space /       \ Enter\  |      |  ALT |
+ *                          |      |      |/       /         \      \ |      |      |
+ *                          '-------------''------'           '------''-------------'
+ * 
+ *   Encoder Left: PG_UP <-> PG_DN
+ *   Encoder Right: -
+ */
+                        bindings = <
+   &kp ESC    &kp N1       &kp N2       &kp N3       &kp N4       &kp N5            &kp N6   &kp N7   &kp N8 &kp N9    &kp N0 &kp BSPC
+   &bt BT_CLR &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4      &kp LEFT &kp DOWN &kp UP &kp RIGHT &trans &trans
+   &kp LSHFT  &trans       &trans       &trans       &trans       &trans            &trans   &trans   &trans &trans    &trans &trans
+                                        &kp LGUI     &trans       &kp SPACE         &kp RET &trans &kp RALT
+                            >;
+
+                            sensor-bindings = <&inc_dec_kp PG_UP PG_DN &inc_dec_kp PG_UP PG_DN>;
+                };
+
+                raise_layer {
+/* RAISE
+ * .-----------------------------------------.                    .-----------------------------------------.
+ * | ESC  |   !  |   @  |   #  |   $  |   %  |                    |   ^  |   &  |   *  |   (  |   )  | BKSP |
+ * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
+ * | CTRL |      |      | Prev | Next |      |                    |   -  |   =  |   {  |   }  |  "|" |   `  |
+ * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
+ * | SHFT |      |      |      |      |      |-------.    .-------|   _  |   +  |   [  |   ]  |   \  |   ~  |
+ * '-----------------------------------------/       /     \      \-----------------------------------------'
+ *                          | Play |      | / Space /       \ Enter\  |      |  ALT |
+ *                          | Paus |      |/       /         \      \ |      |      |
+ *                          '------------''------'            '------''-------------'
+ *
+ *   Encoder Left: -
+ *   Encoder Right: VOL_UP <-> VOL_D
+ */
+                        bindings = <
+    &kp  ESC  &kp EXCL  &kp AT  &kp HASH   &kp DLLR   &kp PRCNT   &kp CARET &kp AMPS  &kp KP_MULTIPLY &kp LPAR &kp RPAR &kp BSPC
+    &kp LCTRL &trans    &trans  &kp C_PREV &kp C_NEXT &trans      &kp MINUS &kp EQUAL &kp LBKT        &kp RBKT &kp PIPE &kp GRAVE
+    &kp LSHFT &trans    &trans  &trans     &trans     &trans      &trans    &trans    &trans          &trans   &kp BSLH &kp TILDE
+                                   &kp LGUI &trans &kp SPACE   &kp RET &trans &kp RALT
+                        >;
+   
+                        sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp PG_UP PG_DN>;
+                };
+ 
+        };
+};
