@@ -100,7 +100,7 @@
             &kp B   &kp L   &kp D   &kp W    &kp Z        &kp APOS   &kp F    &kp O      &kp U     &kp J 
             &kp N   &kp R   &kp T   &kp S    &kp G        &kp Y      &kp H    &kp A      &kp E     &kp I 
             &kp Q   &kp X   &kp M   &kp C    &kp B        &kp K      &kp P    &kp COMMA  &kp DOT   &kp FSLH 
-                            XXX     MO(NUM)  &kp LSHIFT  &skq SPACE  MO(SYM)  XXX
+                            XXX     MO(NUM)  &skq LSHIFT  &kp SPACE  MO(SYM)  XXX
             >;
         };
 
