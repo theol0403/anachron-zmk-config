@@ -27,7 +27,6 @@
 #define STICKY_KEY_TIMEOUT 60000
 
 / {
-    
     chosen {
         zmk,matrix_transform = &five_column_transform;
     };
