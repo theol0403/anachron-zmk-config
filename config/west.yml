@@ -1,7 +1,7 @@
 manifest:
   remotes:
-    - name: zmkfirmware
-      url-base: https://github.com/zmkfirmware
+    - name: theol0403
+      url-base: https://github.com/theol0403
   projects:
     - name: zmk
       remote: zmkfirmware

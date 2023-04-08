@@ -14,9 +14,6 @@
 #define SYM 2
 #define UTIL 3
 
-#define SK(KEY) &nk KEY KEY
-#define MO(LAYER) &mo_tap LAYER F24
-
 #define S_UNDO &kp C_AC_UNDO
 #define S_CUT &kp C_AC_CUT
 #define S_COPY &kp C_AC_COPY
@@ -32,14 +29,6 @@
     };
 
     behaviors {
-        nk: not_so_sticky_key {
-            compatible = "zmk,behavior-hold-tap";
-            label = "NOT_SO_STICKY_KEY";
-            #binding-cells = <2>;
-            tapping_term_ms = <200>;
-            flavor = "tap-preferred";
-            bindings = <&kp>, <&sk>;
-        };
         skq: sticky_key_quick_release {
             compatible = "zmk,behavior-sticky-key";
             label = "STICKY_KEY_QUICK_RELEASE";
@@ -47,16 +36,6 @@
             bindings = <&kp>;
             quick-release;
             release-after-ms = <STICKY_KEY_TIMEOUT>;
-        };
-        // A hold-tap that activates without delay (like `&mo`)
-        mo_tap: mo_with_tap {
-          compatible = "zmk,behavior-hold-tap";
-          label = "MO_WITH_TAP";
-          #binding-cells = <2>;
-          tapping_term_ms = <0>;
-          retro-tap;
-          flavor = "hold-preferred";
-          bindings = <&mo>, <&kp>;
         };
     };
 
@@ -99,35 +78,80 @@
             bindings = <
             &kp B   &kp L   &kp D   &kp W    &kp Z        &kp APOS   &kp F    &kp O      &kp U     &kp J 
             &kp N   &kp R   &kp T   &kp S    &kp G        &kp Y      &kp H    &kp A      &kp E     &kp I 
-            &kp Q   &kp X   &kp M   &kp C    &kp B        &kp K      &kp P    &kp COMMA  &kp DOT   &kp FSLH 
-                            XXX     MO(NUM)  &skq LSHIFT  &kp SPACE  MO(SYM)  XXX
+            &kp Q   &kp X   &kp M   &kp C    &kp V        &kp K      &kp P    &kp COMMA  &kp DOT   &kp FSLH 
+                            XXX     &mo_num  &skq LSHIFT  &kp SPACE  &mo_sym  XXX
             >;
         };
 
         num_layer {
             bindings = <
             TODO      &kp HASH  &kp DLLR   &kp PRCNT &kp CARET   &kp PLUS   &kp N7  &kp N8  &kp N9  &kp ASTRK 
-            SK(LGUI)  SK(LALT)  SK(LCTRL)  SK(LSHFT) &kp LGUI    &kp N3     &kp N0  &kp N1  &kp N2  &kp EQUAL 
+            &sk LGUI  &sk LALT  &sk LCTRL  &sk LSHFT &kp LGUI    &kp N3     &kp N0  &kp N1  &kp N2  &kp EQUAL 
             S_UNDO    S_CUT     S_COPY     S_PASTE   S_REDO      &kp MINUS  &kp N4  &kp N5  &kp N6  &kp FSLH 
-                                           XXX       ___         ___        TODO    ___     XXX
+                                           XXX       ___         &kp SPACE  TODO    ___     XXX
             >;
         };
         sym_layer {
             bindings = <
             &kp GRAVE  &kp AMPS   &kp PIPE  &kp LBKT  &kp RBKT   &kp HOME  &kp PG_DN  &kp PG_UP  &kp END    &kp ESC 
-            &kp BSLH   &kp COLON  &kp EXCL  &kp LPAR  &kp RPAR   &kp LEFT  &kp DOWN   &kp UP     &kp RIGHT  &kp DEL 
-            &kp TILDE  &kp SEMI   &kp AT    &kp LBRC  &kp RBRC   TODO      &kp BSPC   &kp TAB    &kp XXX    &kp ENTER 
+            &kp BSLH   &kp COLON  &kp EXCL  &kp LPAR  &kp RPAR   &kp LEFT  &kp DOWN   &kp UP     &kp RIGHT  &kp ENTER 
+            &kp TILDE  &kp SEMI   &kp AT    &kp LBRC  &kp RBRC   TODO      &kp BSPC   &kp DEL    &kp TAB    &kp CAPS 
                                             XXX       ___        ___       ___        ___        XXX
             >;
         };
-
+ 
         util_layer {
             bindings = <
             TODO      &kp C_MUTE &kp C_VOL_DN &kp C_VOL_UP  &bootloader &kp HOME  &kp PG_DN  &kp PG_UP   &kp END    &kp ESC 
-            SK(LGUI)  SK(LALT)  SK(LCTRL)     SK(LSHFT)     &kp LGUI    &kp LEFT  &kp DOWN   &kp UP      &kp RIGHT  &kp DEL 
-            S_UNDO    S_CUT     S_COPY        S_PASTE       S_REDO      ___       &kp BSPC   &kp TAB     ___        &kp ENTER 
+            &sk LGUI  &sk LALT   &sk LCTRL    &sk LSHFT     &kp LGUI    &kp LEFT  &kp DOWN   &kp UP      &kp RIGHT  &kp DEL 
+            S_UNDO    S_CUT      S_COPY       S_PASTE       S_REDO      ___       &kp BSPC   &kp TAB     ___        &kp ENTER 
                                               XXX           ___         ___       ___        ___         XXX
             >;
         };
     };
+    
+    combos {
+        compatible = "zmk,combos";
+        // speed up nav action keys
+        #define SYM_COMBO(key, pos) \
+            combo_##key { \
+                timeout-ms = <80>; \
+                key-positions = <34 pos>; \
+                partial-holds = <34>; \
+                bindings = <&kp key>; \
+            };
+        SYM_COMBO(BSPC, 26)
+        SYM_COMBO(DEL, 27)
+        SYM_COMBO(TAB, 28)
+        SYM_COMBO(ENTER, 19)
+        SYM_COMBO(ESC, 9)
+    };
+    
+     macros {
+        // when the momentary layer is held or tapped, cancel any pending OS mods
+        // workaround for https://github.com/zmkfirmware/zmk/issues/834
+        mo_sym: mo_sym {
+            label = "MO_SYM";
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings
+                = <&macro_press &mo SYM>
+                , <&macro_tap &kp F24>
+                , <&macro_pause_for_release>
+                , <&macro_release &mo SYM>
+                ;
+        };
+        mo_num: mo_num {
+            label = "MO_NUM";
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings
+                = <&macro_press &mo NUM>
+                , <&macro_tap &kp F24>
+                , <&macro_pause_for_release>
+                , <&macro_release &mo NUM>
+                ;
+        };
+     };
+    
 };
