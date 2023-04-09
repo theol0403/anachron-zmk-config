@@ -138,6 +138,7 @@
     combos {
         compatible = "zmk,combos";
         
+        // simplify base combos
         #define COMBO(name, keypos, combo_bindings, combo_timeout) \
             combo_##name { \
                 key-positions = <keypos>; \
@@ -153,20 +154,23 @@
                 layers = <combo_layer>; \
             }; 
 
-        #define BASE_COMBO(name, keypos, bindings) COMBO(name, keypos, bindings, 30)
-        BASE_COMBO(esc, LT3 LT2, &kp ESC)
-        BASE_COMBO(tab, LT2 LT1, &kp TAB)
-        BASE_COMBO(ent, LB3 LB2, &kp ENTER)
-        // BASE_COMBO(rep, LB2 LB1, &kp REP)
-        BASE_COMBO(bksp, RB1 RB2, &kp BSPC)
-        BASE_COMBO(del, RB2 RB3, &kp DEL)
-        // BASE_COMBO(numl, RB3 RB4, NUML)
+        // universal combos
+        #define GLOBAL_COMBO(name, keypos, bindings) COMBO(name, keypos, bindings, 30)
+        GLOBAL_COMBO(esc, LT3 LT2, &kp ESC)
+        GLOBAL_COMBO(tab, LT2 LT1, &kp TAB)
+        GLOBAL_COMBO(ent, LB3 LB2, &kp ENTER)
+        // GLOBAL_COMBO(rep, LB2 LB1, &kp REP)
+        GLOBAL_COMBO(bksp, RB1 RB2, &kp BSPC)
+        GLOBAL_COMBO(del, RB2 RB3, &kp DEL)
+        // GLOBAL_COMBO(numl, RB3 RB4, NUML)
         
+        // combos on the numpad
         #define NUM_COMBO(name, keypos, bindings) COMBO_LAYER(name, keypos, bindings, 30, NUM)
         NUM_COMBO(lpar, RT1 RT2, &kp LPAR)
         NUM_COMBO(rpar, RT2 RT3, &kp RPAR)
         NUM_COMBO(dot, RM1 RM2, &kp DOT)
 
+        // simplify thumb combos
         #define THUMB_COMBO(thumb, keypos, combo_bindings, combo_layers) \
             combo_thumb_##thumb##_##keypos { \
                 key-positions = <thumb keypos>; \
@@ -176,6 +180,7 @@
                 layers = <combo_layers>; \
             };
 
+        // right thumb combos with right hand SYM layer
         #undef THUMB_COMBO_TIMEOUT
         #define THUMB_COMBO_TIMEOUT 30
         #define SYM_THUMB_COMBO(keypos, bindings) THUMB_COMBO(RH1, keypos, bindings, BASE NUM)
@@ -195,6 +200,7 @@
         SYM_THUMB_COMBO(RB3, &kp TAB)
         // SYM_THUMB_COMBO(RB4, &kp CAPS)
         
+        // right thumb combos with left hand SYM layer 
         #undef THUMB_COMBO_TIMEOUT
         #define THUMB_COMBO_TIMEOUT 40
         SYM_THUMB_COMBO(LT4, &kp TILDE)
@@ -213,6 +219,7 @@
         SYM_THUMB_COMBO(LB1, &kp LBRC)
         SYM_THUMB_COMBO(LB0, &kp RBRC)
         
+        // left thumb combos with left hand NUM layer
         #undef THUMB_COMBO_TIMEOUT
         #define THUMB_COMBO_TIMEOUT 30
         #define NUM_THUMB_COMBO(keypos, bindings) THUMB_COMBO(LH1, keypos, bindings, BASE SYM)
@@ -232,6 +239,7 @@
         NUM_THUMB_COMBO(LB1, S_PASTE)
         NUM_THUMB_COMBO(LB0, S_REDO)
         
+        // left thumb combos with right hand NUM layer
         #undef THUMB_COMBO_TIMEOUT
         #define THUMB_COMBO_TIMEOUT 40
         NUM_THUMB_COMBO(RT0, &kp PLUS)
