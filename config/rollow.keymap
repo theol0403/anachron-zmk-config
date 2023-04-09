@@ -178,7 +178,7 @@
 
         #undef THUMB_COMBO_TIMEOUT
         #define THUMB_COMBO_TIMEOUT 30
-        #define SYM_THUMB_COMBO(keypos, bindings) THUMB_COMBO(RH1, keypos, bindings, BASE)
+        #define SYM_THUMB_COMBO(keypos, bindings) THUMB_COMBO(RH1, keypos, bindings, BASE NUM)
         SYM_THUMB_COMBO(RT0, &kp HOME)
         SYM_THUMB_COMBO(RT1, &kp PG_DN)
         SYM_THUMB_COMBO(RT2, &kp PG_UP)
@@ -196,7 +196,7 @@
         // SYM_THUMB_COMBO(RB4, &kp CAPS)
         
         #undef THUMB_COMBO_TIMEOUT
-        #define THUMB_COMBO_TIMEOUT 60
+        #define THUMB_COMBO_TIMEOUT 40
         SYM_THUMB_COMBO(LT4, &kp TILDE)
         SYM_THUMB_COMBO(LT3, &kp PIPE)
         SYM_THUMB_COMBO(LT2, &kp UNDER)
@@ -215,7 +215,7 @@
         
         #undef THUMB_COMBO_TIMEOUT
         #define THUMB_COMBO_TIMEOUT 30
-        #define NUM_THUMB_COMBO(keypos, bindings) THUMB_COMBO(LH1, keypos, bindings, BASE)
+        #define NUM_THUMB_COMBO(keypos, bindings) THUMB_COMBO(LH1, keypos, bindings, BASE SYM)
         // NUM_THUMB_COMBO(LT4, &kp ATAB)
         NUM_THUMB_COMBO(LT3, &kp HASH)
         NUM_THUMB_COMBO(LT2, &kp DLLR)
@@ -233,7 +233,7 @@
         NUM_THUMB_COMBO(LB0, S_REDO)
         
         #undef THUMB_COMBO_TIMEOUT
-        #define THUMB_COMBO_TIMEOUT 60
+        #define THUMB_COMBO_TIMEOUT 40
         NUM_THUMB_COMBO(RT0, &kp PLUS)
         NUM_THUMB_COMBO(RT1, &kp N7)
         NUM_THUMB_COMBO(RT2, &kp N8)
@@ -249,6 +249,15 @@
         NUM_THUMB_COMBO(RB2, &kp N5)
         NUM_THUMB_COMBO(RB3, &kp N6)
         NUM_THUMB_COMBO(RB4, &kp SLASH)
+
+        // combo_shift_left { 
+        //     key-positions = <RH1 LH1 LM2 RM0>; 
+        //     bindings = <&kp LC(LEFT)>; 
+        //     timeout-ms = <100>; 
+        //     partial-holds = <RH1 LH1 LM2>; 
+        //     layers = <BASE>; 
+        // };
+
     };
     
     
