@@ -66,8 +66,9 @@
     };
 
     macros {
-        // when the momentary layer is held or tapped, cancel any pending OS mods
+        // when the momentary layer is tapped, cancel any pending OS mods
         // workaround for https://github.com/zmkfirmware/zmk/issues/834
+        // bug: cancels even when being held
         mo_sym: mo_sym {
             label = "MO_SYM";
             compatible = "zmk,behavior-macro";
@@ -158,8 +159,8 @@
         #define GLOBAL_COMBO(name, keypos, bindings) COMBO(name, keypos, bindings, 30)
         GLOBAL_COMBO(esc, LT3 LT2, &kp ESC)
         GLOBAL_COMBO(tab, LT2 LT1, &kp TAB)
-        GLOBAL_COMBO(ent, LB3 LB2, &kp ENTER)
-        // GLOBAL_COMBO(rep, LB2 LB1, &kp REP)
+        // GLOBAL_COMBO(ent, LB3 LB2, &kp REP)
+        GLOBAL_COMBO(rep, LB2 LB1, &kp ENTER)
         GLOBAL_COMBO(bksp, RB1 RB2, &kp BSPC)
         GLOBAL_COMBO(del, RB2 RB3, &kp DEL)
         // GLOBAL_COMBO(numl, RB3 RB4, NUML)
@@ -175,14 +176,12 @@
             combo_thumb_##thumb##_##keypos { \
                 key-positions = <thumb keypos>; \
                 bindings = <combo_bindings>; \
-                timeout-ms = <THUMB_COMBO_TIMEOUT>; \
+                timeout-ms = <40>; \
                 partial-holds = <thumb>; \
                 layers = <combo_layers>; \
             };
 
         // right thumb combos with right hand SYM layer
-        #undef THUMB_COMBO_TIMEOUT
-        #define THUMB_COMBO_TIMEOUT 30
         #define SYM_THUMB_COMBO(keypos, bindings) THUMB_COMBO(RH1, keypos, bindings, BASE NUM)
         SYM_THUMB_COMBO(RT0, &kp HOME)
         SYM_THUMB_COMBO(RT1, &kp PG_DN)
@@ -201,8 +200,6 @@
         // SYM_THUMB_COMBO(RB4, &kp CAPS)
         
         // right thumb combos with left hand SYM layer 
-        #undef THUMB_COMBO_TIMEOUT
-        #define THUMB_COMBO_TIMEOUT 40
         SYM_THUMB_COMBO(LT4, &kp TILDE)
         SYM_THUMB_COMBO(LT3, &kp PIPE)
         SYM_THUMB_COMBO(LT2, &kp UNDER)
@@ -220,8 +217,6 @@
         SYM_THUMB_COMBO(LB0, &kp RBRC)
         
         // left thumb combos with left hand NUM layer
-        #undef THUMB_COMBO_TIMEOUT
-        #define THUMB_COMBO_TIMEOUT 30
         #define NUM_THUMB_COMBO(keypos, bindings) THUMB_COMBO(LH1, keypos, bindings, BASE SYM)
         // NUM_THUMB_COMBO(LT4, &kp ATAB)
         NUM_THUMB_COMBO(LT3, &kp HASH)
@@ -240,8 +235,6 @@
         NUM_THUMB_COMBO(LB0, S_REDO)
         
         // left thumb combos with right hand NUM layer
-        #undef THUMB_COMBO_TIMEOUT
-        #define THUMB_COMBO_TIMEOUT 40
         NUM_THUMB_COMBO(RT0, &kp PLUS)
         NUM_THUMB_COMBO(RT1, &kp N7)
         NUM_THUMB_COMBO(RT2, &kp N8)
