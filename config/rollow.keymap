@@ -39,6 +39,7 @@
 //   - Fn num layer
 //   - Alt tab
 // - Add num+fn+left hand BT switcher
+// - Investigate kconfig options
 
 
 / {
@@ -54,14 +55,6 @@
             bindings = <&kp>;
             quick-release;
             release-after-ms = <60000>;
-        };
-    };
-
-    conditional_layers {
-        compatible = "zmk,conditional-layers";
-        util_layer {
-            if-layers = <NUM SYM>;
-            then-layer = <UTIL>;
         };
     };
 
@@ -108,17 +101,17 @@
         };
         num_layer {
             bindings = <
-            TODO      &kp HASH  &kp DLLR   &kp PRCNT &kp CARET   &kp PLUS   &kp N7  &kp N8  &kp N9  &kp ASTRK 
-            &sk LGUI  &sk LALT  &sk LCTRL  &sk LSHFT &kp LGUI    &kp N3     &kp N0  &kp N1  &kp N2  &kp EQUAL 
-            S_UNDO    S_CUT     S_COPY     S_PASTE   S_REDO      &kp MINUS  &kp N4  &kp N5  &kp N6  &kp FSLH 
-                                XXX        &mo NUM   &kp SPACE   TODO       &mo SYM XXX >;
+            TODO      &kp HASH  &kp DLLR   &kp PRCNT &kp CARET   &kp PLUS   &kp N7   &kp N8  &kp N9  &kp ASTRK 
+            &sk LGUI  &sk LALT  &sk LCTRL  &sk LSHFT &kp LGUI    &kp N3     &kp N0   &kp N1  &kp N2  &kp EQUAL 
+            S_UNDO    S_CUT     S_COPY     S_PASTE   S_REDO      &kp MINUS  &kp N4   &kp N5  &kp N6  &kp FSLH 
+                                XXX        &mo NUM   &kp SPACE   TODO       &mo UTIL XXX >;
         };
         sym_layer {
             bindings = <
             &kp TILDE  &kp PIPE  &kp UNDER  &kp LBKT  &kp RBKT   &kp HOME  &kp PG_DN  &kp PG_UP  &kp END    &kp ESC 
             &kp GRAVE  &kp AMPS  &kp AT     &kp LPAR  &kp RPAR   &kp LEFT  &kp DOWN   &kp UP     &kp RIGHT  &kp ENTER 
             &kp BSLH   &kp LT    &kp GT     &kp LBRC  &kp RBRC   TODO      &kp BSPC   &kp DEL    &kp TAB    &kp CAPS 
-                                 XXX        &mo NUM   ___        ___       &mo SYM    XXX >;
+                                 XXX        &mo UTIL  ___        ___       &mo SYM    XXX >;
         };
  
         util_layer {
@@ -200,21 +193,22 @@
         // SYM_THUMB_COMBO(RB4, &kp CAPS)
         
         // right thumb combos with left hand SYM layer 
-        SYM_THUMB_COMBO(LT4, &kp TILDE)
-        SYM_THUMB_COMBO(LT3, &kp PIPE)
-        SYM_THUMB_COMBO(LT2, &kp UNDER)
-        SYM_THUMB_COMBO(LT1, &kp LBKT)
-        SYM_THUMB_COMBO(LT0, &kp RBKT)
-        SYM_THUMB_COMBO(LM4, &kp GRAVE)
-        SYM_THUMB_COMBO(LM3, &kp AMPS)
-        SYM_THUMB_COMBO(LM2, &kp AT)
-        SYM_THUMB_COMBO(LM1, &kp LPAR)
-        SYM_THUMB_COMBO(LM0, &kp RPAR)
-        SYM_THUMB_COMBO(LB4, &kp BSLH)
-        SYM_THUMB_COMBO(LB3, &kp LT)
-        SYM_THUMB_COMBO(LB2, &kp GT)
-        SYM_THUMB_COMBO(LB1, &kp LBRC)
-        SYM_THUMB_COMBO(LB0, &kp RBRC)
+        #define SYM_THUMB_CROSS_COMBO(keypos, bindings) THUMB_COMBO(RH1, keypos, bindings, BASE)
+        SYM_THUMB_CROSS_COMBO(LT4, &kp TILDE)
+        SYM_THUMB_CROSS_COMBO(LT3, &kp PIPE)
+        SYM_THUMB_CROSS_COMBO(LT2, &kp UNDER)
+        SYM_THUMB_CROSS_COMBO(LT1, &kp LBKT)
+        SYM_THUMB_CROSS_COMBO(LT0, &kp RBKT)
+        SYM_THUMB_CROSS_COMBO(LM4, &kp GRAVE)
+        SYM_THUMB_CROSS_COMBO(LM3, &kp AMPS)
+        SYM_THUMB_CROSS_COMBO(LM2, &kp AT)
+        SYM_THUMB_CROSS_COMBO(LM1, &kp LPAR)
+        SYM_THUMB_CROSS_COMBO(LM0, &kp RPAR)
+        SYM_THUMB_CROSS_COMBO(LB4, &kp BSLH)
+        SYM_THUMB_CROSS_COMBO(LB3, &kp LT)
+        SYM_THUMB_CROSS_COMBO(LB2, &kp GT)
+        SYM_THUMB_CROSS_COMBO(LB1, &kp LBRC)
+        SYM_THUMB_CROSS_COMBO(LB0, &kp RBRC)
         
         // left thumb combos with left hand NUM layer
         #define NUM_THUMB_COMBO(keypos, bindings) THUMB_COMBO(LH1, keypos, bindings, BASE SYM)
@@ -235,21 +229,22 @@
         NUM_THUMB_COMBO(LB0, S_REDO)
         
         // left thumb combos with right hand NUM layer
-        NUM_THUMB_COMBO(RT0, &kp PLUS)
-        NUM_THUMB_COMBO(RT1, &kp N7)
-        NUM_THUMB_COMBO(RT2, &kp N8)
-        NUM_THUMB_COMBO(RT3, &kp N9)
-        NUM_THUMB_COMBO(RT4, &kp ASTRK)
-        NUM_THUMB_COMBO(RM0, &kp N0)
-        NUM_THUMB_COMBO(RM1, &kp N1)
-        NUM_THUMB_COMBO(RM2, &kp N2)
-        NUM_THUMB_COMBO(RM3, &kp N3)
-        NUM_THUMB_COMBO(RM4, &kp EQUAL)
-        NUM_THUMB_COMBO(RB0, &kp MINUS)
-        NUM_THUMB_COMBO(RB1, &kp N4)
-        NUM_THUMB_COMBO(RB2, &kp N5)
-        NUM_THUMB_COMBO(RB3, &kp N6)
-        NUM_THUMB_COMBO(RB4, &kp SLASH)
+        #define NUM_THUMB_CROSS_COMBO(keypos, bindings) THUMB_COMBO(LH1, keypos, bindings, BASE)
+        NUM_THUMB_CROSS_COMBO(RT0, &kp PLUS)
+        NUM_THUMB_CROSS_COMBO(RT1, &kp N7)
+        NUM_THUMB_CROSS_COMBO(RT2, &kp N8)
+        NUM_THUMB_CROSS_COMBO(RT3, &kp N9)
+        NUM_THUMB_CROSS_COMBO(RT4, &kp ASTRK)
+        NUM_THUMB_CROSS_COMBO(RM0, &kp N0)
+        NUM_THUMB_CROSS_COMBO(RM1, &kp N1)
+        NUM_THUMB_CROSS_COMBO(RM2, &kp N2)
+        NUM_THUMB_CROSS_COMBO(RM3, &kp N3)
+        NUM_THUMB_CROSS_COMBO(RM4, &kp EQUAL)
+        NUM_THUMB_CROSS_COMBO(RB0, &kp MINUS)
+        NUM_THUMB_CROSS_COMBO(RB1, &kp N4)
+        NUM_THUMB_CROSS_COMBO(RB2, &kp N5)
+        NUM_THUMB_CROSS_COMBO(RB3, &kp N6)
+        NUM_THUMB_CROSS_COMBO(RB4, &kp SLASH)
 
         // combo_shift_left { 
         //     key-positions = <RH1 LH1 LM2 RM0>; 
