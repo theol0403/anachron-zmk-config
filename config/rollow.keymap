@@ -1,6 +1,8 @@
 // Copyright (c) 2022 The ZMK Contributors
 // SPDX-License-Identifier: MIT
 
+#include "../zmk-nodefree-config/helper.h"
+#include "../zmk-nodefree-config/keypos_def/keypos_36keys.h"
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/bt.h>
@@ -20,8 +22,24 @@
 #define S_PASTE &kp C_AC_PASTE
 #define S_REDO &kp C_AC_REDO
 
-// Keep sticky keys active for a long time so they effectively do not time out
-#define STICKY_KEY_TIMEOUT 60000
+// TODO:
+// - Encoders:
+//   - scroll operation
+//   - button press
+// - OLED
+// - Numlock
+//   - Tapdance
+//   - Combo
+//   - Fn key undoes numlock
+// - Caps word
+// - Split up config into files
+// - Fix sticky keys for cadding (use the wrapping around behavior)
+// - Layer features
+//   - Repeat key
+//   - Fn num layer
+//   - Alt tab
+// - Add num+fn+left hand BT switcher
+
 
 / {
     chosen {
@@ -35,43 +53,18 @@
             #binding-cells = <1>;
             bindings = <&kp>;
             quick-release;
-            release-after-ms = <STICKY_KEY_TIMEOUT>;
+            release-after-ms = <60000>;
         };
     };
 
     conditional_layers {
         compatible = "zmk,conditional-layers";
         util_layer {
-            if-layers = <1 2>;
-            then-layer = <3>;
+            if-layers = <NUM SYM>;
+            then-layer = <UTIL>;
         };
     };
     
-    // TODO:
-    // - Encoders:
-    //   - scroll operation
-    //   - button press
-    // - OLED
-    // - Numlock
-    //   - Tapdance
-    //   - Combo
-    //   - Fn key undoes numlock
-    // - Combos
-    //   - action keys?
-    //   - speed up modifiers
-    // - Caps word
-    // - Improved shortcut commands
-    // - Split up config into files
-    // - Switch to nodefree config
-    // - Fix sticky keys for cadding (use the wrapping around behavior)
-    // - Layer features
-    //   - Repeat key
-    //   - Fn num layer
-    //   - Alt tab
-    // - Figure out where to put in symbol/util layer empty space (caps? caps word?)
-    // - Add num+fn+left hand BT switcher
-    
-
     keymap {
         compatible = "zmk,keymap";
         default_layer {
@@ -79,52 +72,112 @@
             &kp B   &kp L   &kp D   &kp W    &kp Z        &kp APOS   &kp F    &kp O      &kp U     &kp J 
             &kp N   &kp R   &kp T   &kp S    &kp G        &kp Y      &kp H    &kp A      &kp E     &kp I 
             &kp Q   &kp X   &kp M   &kp C    &kp V        &kp K      &kp P    &kp COMMA  &kp DOT   &kp FSLH 
-                            XXX     &mo_num  &skq LSHIFT  &kp SPACE  &mo_sym  XXX
-            >;
+                            XXX     &mo_num  &skq LSHIFT  &kp SPACE  &mo_sym  XXX >;
         };
-
         num_layer {
             bindings = <
             TODO      &kp HASH  &kp DLLR   &kp PRCNT &kp CARET   &kp PLUS   &kp N7  &kp N8  &kp N9  &kp ASTRK 
             &sk LGUI  &sk LALT  &sk LCTRL  &sk LSHFT &kp LGUI    &kp N3     &kp N0  &kp N1  &kp N2  &kp EQUAL 
             S_UNDO    S_CUT     S_COPY     S_PASTE   S_REDO      &kp MINUS  &kp N4  &kp N5  &kp N6  &kp FSLH 
-                                           XXX       ___         &kp SPACE  TODO    ___     XXX
-            >;
+                                           XXX       ___         &kp SPACE  TODO    ___     XXX >;
         };
         sym_layer {
             bindings = <
             &kp GRAVE  &kp AMPS   &kp PIPE  &kp LBKT  &kp RBKT   &kp HOME  &kp PG_DN  &kp PG_UP  &kp END    &kp ESC 
             &kp BSLH   &kp COLON  &kp EXCL  &kp LPAR  &kp RPAR   &kp LEFT  &kp DOWN   &kp UP     &kp RIGHT  &kp ENTER 
             &kp TILDE  &kp SEMI   &kp AT    &kp LBRC  &kp RBRC   TODO      &kp BSPC   &kp DEL    &kp TAB    &kp CAPS 
-                                            XXX       ___        ___       ___        ___        XXX
-            >;
+                                            XXX       ___        ___       ___        ___        XXX >;
         };
  
         util_layer {
             bindings = <
             TODO      &kp C_MUTE &kp C_VOL_DN &kp C_VOL_UP  &bootloader &kp HOME  &kp PG_DN  &kp PG_UP   &kp END    &kp ESC 
-            &sk LGUI  &sk LALT   &sk LCTRL    &sk LSHFT     &kp LGUI    &kp LEFT  &kp DOWN   &kp UP      &kp RIGHT  &kp DEL 
-            S_UNDO    S_CUT      S_COPY       S_PASTE       S_REDO      ___       &kp BSPC   &kp TAB     ___        &kp ENTER 
-                                              XXX           ___         ___       ___        ___         XXX
-            >;
+            &sk LGUI  &sk LALT   &sk LCTRL    &sk LSHFT     &kp LGUI    &kp LEFT  &kp DOWN   &kp UP      &kp RIGHT  &kp ENTER 
+            S_UNDO    S_CUT      S_COPY       S_PASTE       S_REDO      TODO      &kp BSPC   &kp DEL     &kp TAB    &kp CAPS 
+                                              XXX           ___         ___       ___        ___         XXX >;
         };
     };
     
+// ╭─────────────────────┬─────────────────────╮
+// │ LT4 LT3 LT2 LT1 LT0 │ RT0 RT1 RT2 RT3 RT4 │
+// │ LM4 LM3 LM2 LM1 LM0 │ RM0 RM1 RM2 RM3 RM4 │
+// │ LB4 LB3 LB2 LB1 LB0 │ RB0 RB1 RB2 RB3 RB4 │
+// ╰───────╮ LH2 LH1 LH0 │ RH0 RH1 RH2 ╭───────╯
+//         ╰─────────────┴─────────────╯
     combos {
         compatible = "zmk,combos";
-        // speed up nav action keys
-        #define SYM_COMBO(key, pos) \
-            combo_##key { \
-                timeout-ms = <80>; \
-                key-positions = <34 pos>; \
-                partial-holds = <34>; \
-                bindings = <&kp key>; \
+        
+        #define COMBO(name, keypos, combo_bindings, combo_timeout) \
+            combo_##name { \
+                key-positions = <keypos>; \
+                bindings = <combo_bindings>; \
+                timeout-ms = <combo_timeout>; \
+            }; 
+
+        #define COMBO_LAYER(name, keypos, combo_bindings, combo_timeout, combo_layer) \
+            combo_##name { \
+                key-positions = <keypos>; \
+                bindings = <combo_bindings>; \
+                timeout-ms = <combo_timeout>; \
+                layers = <combo_layer>; \
+            }; 
+
+        #define THUMB_COMBO(thumb, keypos, combo_bindings, combo_layers) \
+            combo_thumb_##keypos { \
+                key-positions = <thumb keypos>; \
+                bindings = <combo_bindings>; \
+                timeout-ms = <30>; \
+                partial-holds = <thumb>; \
+                layers = <combo_layers>; \
             };
-        SYM_COMBO(BSPC, 26)
-        SYM_COMBO(DEL, 27)
-        SYM_COMBO(TAB, 28)
-        SYM_COMBO(ENTER, 19)
-        SYM_COMBO(ESC, 9)
+            
+        #define BASE_COMBO(name, keypos, bindings) COMBO(name, keypos, bindings, 30)
+        BASE_COMBO(esc, LT3 LT2, &kp ESC)
+        BASE_COMBO(tab, LT2 LT1, &kp TAB)
+        BASE_COMBO(ent, LB3 LB2, &kp ENTER)
+        // BASE_COMBO(rep, LB2 LB1, &kp REP)
+        BASE_COMBO(bksp, RB1 RB2, &kp BSPC)
+        BASE_COMBO(del, RB2 RB3, &kp DEL)
+        // BASE_COMBO(numl, RB3 RB4, NUML)
+        
+        #define NUM_COMBO(name, keypos, bindings) COMBO_LAYER(name, keypos, bindings, 30, NUM)
+        NUM_COMBO(lpar, RT1 RT2, &kp LPAR)
+        NUM_COMBO(rpar, RT2 RT3, &kp RPAR)
+        NUM_COMBO(dot, RM1 RM2, &kp DOT)
+
+        #define SYM_THUMB_COMBO(keypos, bindings) THUMB_COMBO(RH1, keypos, bindings, BASE NUM)
+        SYM_THUMB_COMBO(RT0, &kp HOME)
+        SYM_THUMB_COMBO(RT1, &kp PG_DN)
+        SYM_THUMB_COMBO(RT2, &kp PG_UP)
+        SYM_THUMB_COMBO(RT3, &kp END)
+        SYM_THUMB_COMBO(RT4, &kp ESC)
+        SYM_THUMB_COMBO(RM0, &kp LEFT)
+        SYM_THUMB_COMBO(RM1, &kp DOWN)
+        SYM_THUMB_COMBO(RM2, &kp UP)
+        SYM_THUMB_COMBO(RM3, &kp RIGHT)
+        SYM_THUMB_COMBO(RM4, &kp ENTER)
+        // SYM_THUMB_COMBO(RB0, &kp REP) 
+        SYM_THUMB_COMBO(RB1, &kp BSPC)
+        SYM_THUMB_COMBO(RB2, &kp DEL)
+        SYM_THUMB_COMBO(RB3, &kp TAB)
+        // SYM_THUMB_COMBO(RB4, &kp CAPS)
+        
+        #define NUM_THUMB_COMBO(keypos, bindings) THUMB_COMBO(LH1, keypos, bindings, BASE SYM)
+        // NUM_THUMB_COMBO(LT4, &kp ATAB)
+        NUM_THUMB_COMBO(LT3, &kp HASH)
+        NUM_THUMB_COMBO(LT2, &kp DLLR)
+        NUM_THUMB_COMBO(LT1, &kp PRCNT)
+        NUM_THUMB_COMBO(LT0, &kp CARET)
+        NUM_THUMB_COMBO(LM4, &sk LGUI)
+        NUM_THUMB_COMBO(LM3, &sk LALT)
+        NUM_THUMB_COMBO(LM2, &sk LCTRL)
+        NUM_THUMB_COMBO(LM1, &sk LSHFT)
+        NUM_THUMB_COMBO(LM0, &kp LGUI)
+        NUM_THUMB_COMBO(LB4, S_UNDO)
+        NUM_THUMB_COMBO(LB3, S_CUT)
+        NUM_THUMB_COMBO(LB2, S_COPY)
+        NUM_THUMB_COMBO(LB1, S_PASTE)
+        NUM_THUMB_COMBO(LB0, S_REDO)
     };
     
      macros {
