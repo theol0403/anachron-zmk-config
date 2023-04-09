@@ -64,6 +64,37 @@
             then-layer = <UTIL>;
         };
     };
+
+    macros {
+        // when the momentary layer is held or tapped, cancel any pending OS mods
+        // workaround for https://github.com/zmkfirmware/zmk/issues/834
+        mo_sym: mo_sym {
+            label = "MO_SYM";
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <0>;
+            tap-ms = <0>;
+            bindings
+                = <&macro_tap &kp F24>
+                , <&macro_press &mo SYM>
+                , <&macro_pause_for_release>
+                , <&macro_release &mo SYM>
+                ;
+        };
+        mo_num: mo_num {
+            label = "MO_NUM";
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <0>;
+            tap-ms = <0>;
+            bindings
+                = <&macro_tap &kp F24>
+                , <&macro_press &mo NUM>
+                , <&macro_pause_for_release>
+                , <&macro_release &mo NUM>
+                ;
+        };
+    };
     
     keymap {
         compatible = "zmk,keymap";
@@ -79,14 +110,14 @@
             TODO      &kp HASH  &kp DLLR   &kp PRCNT &kp CARET   &kp PLUS   &kp N7  &kp N8  &kp N9  &kp ASTRK 
             &sk LGUI  &sk LALT  &sk LCTRL  &sk LSHFT &kp LGUI    &kp N3     &kp N0  &kp N1  &kp N2  &kp EQUAL 
             S_UNDO    S_CUT     S_COPY     S_PASTE   S_REDO      &kp MINUS  &kp N4  &kp N5  &kp N6  &kp FSLH 
-                                           XXX       ___         &kp SPACE  TODO    ___     XXX >;
+                                XXX        &mo NUM   &kp SPACE   TODO       &mo SYM XXX >;
         };
         sym_layer {
             bindings = <
-            &kp GRAVE  &kp AMPS   &kp PIPE  &kp LBKT  &kp RBKT   &kp HOME  &kp PG_DN  &kp PG_UP  &kp END    &kp ESC 
-            &kp BSLH   &kp COLON  &kp EXCL  &kp LPAR  &kp RPAR   &kp LEFT  &kp DOWN   &kp UP     &kp RIGHT  &kp ENTER 
-            &kp TILDE  &kp SEMI   &kp AT    &kp LBRC  &kp RBRC   TODO      &kp BSPC   &kp DEL    &kp TAB    &kp CAPS 
-                                            XXX       ___        ___       ___        ___        XXX >;
+            &kp TILDE  &kp PIPE  &kp UNDER  &kp LBKT  &kp RBKT   &kp HOME  &kp PG_DN  &kp PG_UP  &kp END    &kp ESC 
+            &kp GRAVE  &kp AMPS  &kp AT     &kp LPAR  &kp RPAR   &kp LEFT  &kp DOWN   &kp UP     &kp RIGHT  &kp ENTER 
+            &kp BSLH   &kp LT    &kp GT     &kp LBRC  &kp RBRC   TODO      &kp BSPC   &kp DEL    &kp TAB    &kp CAPS 
+                                 XXX        &mo NUM   ___        ___       &mo SYM    XXX >;
         };
  
         util_layer {
@@ -94,7 +125,7 @@
             TODO      &kp C_MUTE &kp C_VOL_DN &kp C_VOL_UP  &bootloader &kp HOME  &kp PG_DN  &kp PG_UP   &kp END    &kp ESC 
             &sk LGUI  &sk LALT   &sk LCTRL    &sk LSHFT     &kp LGUI    &kp LEFT  &kp DOWN   &kp UP      &kp RIGHT  &kp ENTER 
             S_UNDO    S_CUT      S_COPY       S_PASTE       S_REDO      TODO      &kp BSPC   &kp DEL     &kp TAB    &kp CAPS 
-                                              XXX           ___         ___       ___        ___         XXX >;
+                                 XXX          ___           ___         ___       ___        XXX >;
         };
     };
     
@@ -122,15 +153,6 @@
                 layers = <combo_layer>; \
             }; 
 
-        #define THUMB_COMBO(thumb, keypos, combo_bindings, combo_layers) \
-            combo_thumb_##keypos { \
-                key-positions = <thumb keypos>; \
-                bindings = <combo_bindings>; \
-                timeout-ms = <30>; \
-                partial-holds = <thumb>; \
-                layers = <combo_layers>; \
-            };
-            
         #define BASE_COMBO(name, keypos, bindings) COMBO(name, keypos, bindings, 30)
         BASE_COMBO(esc, LT3 LT2, &kp ESC)
         BASE_COMBO(tab, LT2 LT1, &kp TAB)
@@ -145,7 +167,18 @@
         NUM_COMBO(rpar, RT2 RT3, &kp RPAR)
         NUM_COMBO(dot, RM1 RM2, &kp DOT)
 
-        #define SYM_THUMB_COMBO(keypos, bindings) THUMB_COMBO(RH1, keypos, bindings, BASE NUM)
+        #define THUMB_COMBO(thumb, keypos, combo_bindings, combo_layers) \
+            combo_thumb_##thumb##_##keypos { \
+                key-positions = <thumb keypos>; \
+                bindings = <combo_bindings>; \
+                timeout-ms = <THUMB_COMBO_TIMEOUT>; \
+                partial-holds = <thumb>; \
+                layers = <combo_layers>; \
+            };
+
+        #undef THUMB_COMBO_TIMEOUT
+        #define THUMB_COMBO_TIMEOUT 30
+        #define SYM_THUMB_COMBO(keypos, bindings) THUMB_COMBO(RH1, keypos, bindings, BASE)
         SYM_THUMB_COMBO(RT0, &kp HOME)
         SYM_THUMB_COMBO(RT1, &kp PG_DN)
         SYM_THUMB_COMBO(RT2, &kp PG_UP)
@@ -162,7 +195,27 @@
         SYM_THUMB_COMBO(RB3, &kp TAB)
         // SYM_THUMB_COMBO(RB4, &kp CAPS)
         
-        #define NUM_THUMB_COMBO(keypos, bindings) THUMB_COMBO(LH1, keypos, bindings, BASE SYM)
+        #undef THUMB_COMBO_TIMEOUT
+        #define THUMB_COMBO_TIMEOUT 60
+        SYM_THUMB_COMBO(LT4, &kp TILDE)
+        SYM_THUMB_COMBO(LT3, &kp PIPE)
+        SYM_THUMB_COMBO(LT2, &kp UNDER)
+        SYM_THUMB_COMBO(LT1, &kp LBKT)
+        SYM_THUMB_COMBO(LT0, &kp RBKT)
+        SYM_THUMB_COMBO(LM4, &kp GRAVE)
+        SYM_THUMB_COMBO(LM3, &kp AMPS)
+        SYM_THUMB_COMBO(LM2, &kp AT)
+        SYM_THUMB_COMBO(LM1, &kp LPAR)
+        SYM_THUMB_COMBO(LM0, &kp RPAR)
+        SYM_THUMB_COMBO(LB4, &kp BSLH)
+        SYM_THUMB_COMBO(LB3, &kp LT)
+        SYM_THUMB_COMBO(LB2, &kp GT)
+        SYM_THUMB_COMBO(LB1, &kp LBRC)
+        SYM_THUMB_COMBO(LB0, &kp RBRC)
+        
+        #undef THUMB_COMBO_TIMEOUT
+        #define THUMB_COMBO_TIMEOUT 30
+        #define NUM_THUMB_COMBO(keypos, bindings) THUMB_COMBO(LH1, keypos, bindings, BASE)
         // NUM_THUMB_COMBO(LT4, &kp ATAB)
         NUM_THUMB_COMBO(LT3, &kp HASH)
         NUM_THUMB_COMBO(LT2, &kp DLLR)
@@ -178,33 +231,25 @@
         NUM_THUMB_COMBO(LB2, S_COPY)
         NUM_THUMB_COMBO(LB1, S_PASTE)
         NUM_THUMB_COMBO(LB0, S_REDO)
+        
+        #undef THUMB_COMBO_TIMEOUT
+        #define THUMB_COMBO_TIMEOUT 60
+        NUM_THUMB_COMBO(RT0, &kp PLUS)
+        NUM_THUMB_COMBO(RT1, &kp N7)
+        NUM_THUMB_COMBO(RT2, &kp N8)
+        NUM_THUMB_COMBO(RT3, &kp N9)
+        NUM_THUMB_COMBO(RT4, &kp ASTRK)
+        NUM_THUMB_COMBO(RM0, &kp N0)
+        NUM_THUMB_COMBO(RM1, &kp N1)
+        NUM_THUMB_COMBO(RM2, &kp N2)
+        NUM_THUMB_COMBO(RM3, &kp N3)
+        NUM_THUMB_COMBO(RM4, &kp EQUAL)
+        NUM_THUMB_COMBO(RB0, &kp MINUS)
+        NUM_THUMB_COMBO(RB1, &kp N4)
+        NUM_THUMB_COMBO(RB2, &kp N5)
+        NUM_THUMB_COMBO(RB3, &kp N6)
+        NUM_THUMB_COMBO(RB4, &kp SLASH)
     };
     
-     macros {
-        // when the momentary layer is held or tapped, cancel any pending OS mods
-        // workaround for https://github.com/zmkfirmware/zmk/issues/834
-        mo_sym: mo_sym {
-            label = "MO_SYM";
-            compatible = "zmk,behavior-macro";
-            #binding-cells = <0>;
-            bindings
-                = <&macro_press &mo SYM>
-                , <&macro_tap &kp F24>
-                , <&macro_pause_for_release>
-                , <&macro_release &mo SYM>
-                ;
-        };
-        mo_num: mo_num {
-            label = "MO_NUM";
-            compatible = "zmk,behavior-macro";
-            #binding-cells = <0>;
-            bindings
-                = <&macro_press &mo NUM>
-                , <&macro_tap &kp F24>
-                , <&macro_pause_for_release>
-                , <&macro_release &mo NUM>
-                ;
-        };
-     };
     
 };
