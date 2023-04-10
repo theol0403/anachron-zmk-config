@@ -41,6 +41,24 @@
 // - Add num+fn+left hand BT switcher
 // - Investigate kconfig options
 
+&sk {  // sticky-key config
+    release-after-ms = <1000>;  // release after timeout
+    // TODO: check if this allows rolling mods
+    // quick-release;             // no double capitalization when rolling keys
+};
+
+&sl {  // sticky-layer config
+    ignore-modifiers;          // allow chording sticky mods & layers
+};
+
+&caps_word {  // mods deactivate caps-word, requires PR #1441
+    /delete-property/ ignore-modifiers;
+};
+
+&num_word {  // num-word, requires PR #1441
+    layers = <NUM>;
+};
+
 
 / {
     chosen {
@@ -55,6 +73,51 @@
             bindings = <&kp>;
             quick-release;
             release-after-ms = <60000>;
+        };
+        
+        // tap: sticky-shift | shift + tap/ double-tap: caps-word | hold: shift
+        #define SMRT_SHFT &smrt_shft
+        smrt_shft: smrt_shft { 
+            compatible = "zmk,behavior-mod-morph";
+            label = "SMRT_SHFT";  
+            #binding-cells = <0>; 
+            bindings = <&skq LSHFT>, <&caps_word>; 
+            mods = <(MOD_LSFT)>; 
+        }; 
+        
+        // tap: num-word | double-tap: sticky num-layer | hold: num-layer
+        // TODO: need cancel
+        #define SMRT_NUM &smrt_num NUM 0
+        smrt_num: smrt_num { 
+            compatible = "zmk,behavior-hold-tap"; 
+            label = "SMRT_NUM";
+            #binding-cells = <2>; 
+            flavor = "balanced"; 
+            tapping-term-ms = <200>; 
+            quick-tap-ms = <175>; 
+            bindings = <&mo>, 
+            <&num_dance>; 
+        }; 
+
+       num_dance: num_dance { 
+            compatible = "zmk,behavior-tap-dance"; 
+            label = "SMRT_NUM_DANCE";
+            #binding-cells = <0>; 
+            tapping-term-ms = <200>; 
+            bindings = <&num_word>, <&sl NUM>; // reverse this for sticky-num on single tap
+        };
+        
+        // Alt+Tab swapper, requires PR #1366
+        swapper: swapper { 
+            compatible = "zmk,behavior-tri-state"; 
+            label = "SWAPPER"; 
+            #binding-cells = <0>; 
+            bindings 
+                = <&kt LALT>
+                , <&kp TAB>
+                , <&kt LALT>
+                ; 
+            ignored-key-positions = <LM1>; // shift-alt-tab 
         };
     };
 
@@ -102,35 +165,63 @@
         compatible = "zmk,keymap";
         default_layer {
             bindings = <
-            &kp B   &kp L   &kp D   &kp W    &kp Z        &kp APOS   &kp F    &kp O      &kp U     &kp J 
-            &kp N   &kp R   &kp T   &kp S    &kp G        &kp Y      &kp H    &kp A      &kp E     &kp I 
-            &kp Q   &kp X   &kp M   &kp C    &kp V        &kp K      &kp P    &kp COMMA  &kp DOT   &kp FSLH 
-                            XXX     &mo_num  &skq LSHIFT  &kp SPACE  &mo_sym  XXX >;
+            &kp B   &kp L   &kp D   &kp W    &kp Z       &kp APOS    &kp F    &kp O         &kp U       &kp J 
+            &kp N   &kp R   &kp T   &kp S    &kp G       &kp Y       &kp H    &kp A         &kp E       &kp I 
+            &kp Q   &kp X   &kp M   &kp C    &kp V       &kp K       &kp P    &comma_morph  &dot_morph  &qmark_morph
+                            XXX     SMRT_NUM SMRT_SHFT   &spc_morph  &mo_sym  XXX >;
         };
         num_layer {
             bindings = <
-            TODO      &kp HASH  &kp DLLR   &kp PRCNT &kp CARET   &kp PLUS   &kp N7  &kp N8  &kp N9  &kp ASTRK 
-            &sk LGUI  &sk LALT  &sk LCTRL  &sk LSHFT &kp LGUI    &kp N3     &kp N0  &kp N1  &kp N2  &kp EQUAL 
-            S_UNDO    S_CUT     S_COPY     S_PASTE   S_REDO      &kp MINUS  &kp N4  &kp N5  &kp N6  &kp FSLH 
-                                XXX        &mo NUM   &kp SPACE   TODO       &mo SYM XXX >;
+            &swapper  &kp HASH  &kp DLLR   &kp PRCNT  &kp CARET   &kp PLUS  &kp N7   &kp N8  &kp N9  &kp ASTRK 
+            &sk LGUI  &sk LALT  &sk LCTRL  &sk LSHFT  &kp LGUI    &kp N3    &kp N0   &kp N1  &kp N2  &kp EQUAL 
+            S_UNDO    S_CUT     S_COPY     S_PASTE    S_REDO      &kp MINUS &kp N4   &kp N5  &kp N6  &kp FSLH 
+                                XXX        &mo NUM    &kp SPACE   &kp SPACE &mo SYM  XXX >;
         };
         sym_layer {
             bindings = <
-            &kp TILDE  &kp PIPE  &kp UNDER  &kp LBKT  &kp RBKT   &kp HOME  &kp PG_DN  &kp PG_UP  &kp END    &kp ESC 
-            &kp GRAVE  &kp AMPS  &kp AT     &kp LPAR  &kp RPAR   &kp LEFT  &kp DOWN   &kp UP     &kp RIGHT  &kp ENTER 
-            &kp BSLH   &kp LT    &kp GT     &kp LBRC  &kp RBRC   TODO      &kp BSPC   &kp DEL    &kp TAB    &kp CAPS 
-                                 XXX        &mo NUM   ___        ___       &mo SYM    XXX >;
+            &kp TILDE  &kp PIPE  &kp UNDER  &kp LBKT  &kp RBKT   &kp HOME    &kp PG_DN  &kp PG_UP  &kp END    &kp ESC 
+            &kp GRAVE  &kp AMPS  &kp AT     &kp LPAR  &kp RPAR   &kp LEFT    &kp DOWN   &kp UP     &kp RIGHT  &kp ENTER 
+            &kp BSLH   &kp LT    &kp GT     &kp LBRC  &kp RBRC   &key_repeat &kp BSPC   &kp DEL    &kp TAB    &kp CAPS 
+                                 XXX        &mo NUM   ___        ___         &mo SYM    XXX >;
         };
  
         util_layer {
             bindings = <
-            TODO      &kp C_MUTE &kp C_VOL_DN &kp C_VOL_UP  &bootloader &kp HOME  &kp PG_DN  &kp PG_UP   &kp END    &kp ESC 
-            &sk LGUI  &sk LALT   &sk LCTRL    &sk LSHFT     &kp LGUI    &kp LEFT  &kp DOWN   &kp UP      &kp RIGHT  &kp ENTER 
-            S_UNDO    S_CUT      S_COPY       S_PASTE       S_REDO      TODO      &kp BSPC   &kp DEL     &kp TAB    &kp CAPS 
-                                 XXX          ___           ___         ___       ___        XXX >;
+            &bootloader XXX       XXX        XXX       &kp PSCRN   &kp HOME     &kp PG_DN  &kp PG_UP   &kp END    &kp ESC 
+            &sk LGUI    &sk LALT  &sk LCTRL  &sk LSHFT &kp LGUI    &kp LEFT     &kp DOWN   &kp UP      &kp RIGHT  &kp ENTER 
+            S_UNDO      S_CUT     S_COPY     S_PASTE   S_REDO      &key_repeat  &kp BSPC   &kp DEL     &kp TAB    &kp CAPS 
+                                  XXX        ___       ___         ___          ___        XXX >;
         };
     };
 };
+    
+// MOD_MORPHS
+// tap: comma | shift + tap: semicolon 
+ZMK_BEHAVIOR(comma_morph, mod_morph,
+    mods = <(MOD_LSFT|MOD_RSFT)>;
+    bindings = <&kp COMMA>, <&kp SEMICOLON>;
+)
+// tap: dot | shift + tap: colon 
+ZMK_BEHAVIOR(dot_morph, mod_morph,
+    bindings = <&kp DOT>, <&kp COLON>;
+    mods = <(MOD_LSFT|MOD_RSFT)>;
+)
+// tap: qmark | shift + tap: excl
+ZMK_BEHAVIOR(qmark_morph, mod_morph,
+    bindings = <&kp QMARK>, <&kp EXCL>;
+    mods = <(MOD_LSFT|MOD_RSFT)>;
+)
+
+// tap: space | shift + tap: dot -> space -> sticky shift
+ZMK_BEHAVIOR(spc_morph, mod_morph,
+    bindings = <&kp SPACE>, <&dot_spc>;
+    mods = <(MOD_LSFT|MOD_RSFT)>;
+)
+ZMK_BEHAVIOR(dot_spc, macro,
+    wait-ms = <0>;
+    tap-ms = <5>;
+    bindings = <&kp DOT &kp SPACE &sk LSHFT>;
+)
 
 // COMBOS
 // ╭─────────────────────┬─────────────────────╮
@@ -139,7 +230,10 @@
 // │ LB4 LB3 LB2 LB1 LB0 │ RB0 RB1 RB2 RB3 RB4 │
 // ╰───────╮ LH2 LH1 LH0 │ RH0 RH1 RH2 ╭───────╯
 //         ╰─────────────┴─────────────╯
-// universal combos
+// use global-quick-tap-ms for combos (requires PR 1387)
+#undef COMBO_HOOK
+#define COMBO_HOOK global-quick-tap-ms = <100>;
+// combos on every layer
 #define GLOBAL_COMBO(name, keypos, bindings) ZMK_COMBO(name, bindings, keypos, ALL, 30)
 GLOBAL_COMBO(esc, LT3 LT2, &kp ESC)
 GLOBAL_COMBO(tab, LT2 LT1, &kp TAB)
@@ -155,7 +249,11 @@ NUM_COMBO(lpar, RT1 RT2, &kp LPAR)
 NUM_COMBO(rpar, RT2 RT3, &kp RPAR)
 NUM_COMBO(dot, RM1 RM2, &kp DOT)
 
-// simplify thumb combos
+// thumb combos are a feature that I designed to make it faster to type keys on the layers
+// it allows you to mash the thumb mo key and the key on the layer together at the same time
+// it relies on a patch I made to zmk which allows partial-holds when releasing the key while holding the thumb
+// thumb combos are implemented using a few hacks that solve all edge cases
+// the macro is used to enable the layer while the combo is held so that other keys on the layer can be used
 #define THUMB_COMBO(thumb_layer, thumb, keypos, combo_bindings, combo_layers) \
     ZMK_BEHAVIOR(macro_thumb_##thumb_layer##_##thumb##_##keypos, macro, \
         wait-ms = <0>; \
@@ -177,6 +275,7 @@ NUM_COMBO(dot, RM1 RM2, &kp DOT)
                 bindings = <&macro_thumb_##thumb_layer##_##thumb##_##keypos>; \
                 partial-holds = <thumb>; \
                 layers = <combo_layers>; \
+                COMBO_HOOK \
             }; \
         }; \
     };
@@ -193,7 +292,7 @@ SYM_THUMB_COMBO(RM1, &kp DOWN)
 SYM_THUMB_COMBO(RM2, &kp UP)
 SYM_THUMB_COMBO(RM3, &kp RIGHT)
 SYM_THUMB_COMBO(RM4, &kp ENTER)
-// SYM_THUMB_COMBO(RB0, &kp REP) 
+SYM_THUMB_COMBO(RB0, &key_repeat) 
 SYM_THUMB_COMBO(RB1, &kp BSPC)
 SYM_THUMB_COMBO(RB2, &kp DEL)
 SYM_THUMB_COMBO(RB3, &kp TAB)
@@ -219,7 +318,7 @@ SYM_THUMB_CROSS_COMBO(LB0, &kp RBRC)
 
 // left thumb combos with left hand NUM layer
 #define NUM_THUMB_COMBO(keypos, bindings) THUMB_COMBO(NUM, LH1, keypos, bindings, BASE SYM)
-// NUM_THUMB_COMBO(LT4, &kp ATAB)
+NUM_THUMB_COMBO(LT4, &swapper)
 NUM_THUMB_COMBO(LT3, &kp HASH)
 NUM_THUMB_COMBO(LT2, &kp DLLR)
 NUM_THUMB_COMBO(LT1, &kp PRCNT)

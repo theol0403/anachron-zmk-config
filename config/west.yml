@@ -4,7 +4,7 @@ manifest:
       url-base: https://github.com/theol0403
   projects:
     - name: zmk
-      remote: zmkfirmware
+      remote: theol0403
       revision: main
       import: app/west.yml
   self:
