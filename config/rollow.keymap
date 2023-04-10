@@ -42,9 +42,8 @@
 // - Investigate kconfig options
 
 &sk {  // sticky-key config
-    release-after-ms = <1000>;  // release after timeout
-    // TODO: check if this allows rolling mods
-    // quick-release;             // no double capitalization when rolling keys
+    release-after-ms = <2000>;  // release after timeout
+    quick-release;             // no double capitalization when rolling keys
 };
 
 &sl {  // sticky-layer config
@@ -59,6 +58,9 @@
     layers = <NUM>;
 };
 
+&key_repeat {
+    usage-pages = <HID_USAGE_KEY HID_USAGE_CONSUMER>;
+};
 
 / {
     chosen {
@@ -66,22 +68,13 @@
     };
 
     behaviors {
-        skq: sticky_key_quick_release {
-            compatible = "zmk,behavior-sticky-key";
-            label = "STICKY_KEY_QUICK_RELEASE";
-            #binding-cells = <1>;
-            bindings = <&kp>;
-            quick-release;
-            release-after-ms = <60000>;
-        };
-        
         // tap: sticky-shift | shift + tap/ double-tap: caps-word | hold: shift
         #define SMRT_SHFT &smrt_shft
         smrt_shft: smrt_shft { 
             compatible = "zmk,behavior-mod-morph";
             label = "SMRT_SHFT";  
             #binding-cells = <0>; 
-            bindings = <&skq LSHFT>, <&caps_word>; 
+            bindings = <&sk LSHFT>, <&caps_word>; 
             mods = <(MOD_LSFT)>; 
         }; 
         
@@ -168,7 +161,7 @@
             &kp B   &kp L   &kp D   &kp W    &kp Z       &kp APOS    &kp F    &kp O         &kp U       &kp J 
             &kp N   &kp R   &kp T   &kp S    &kp G       &kp Y       &kp H    &kp A         &kp E       &kp I 
             &kp Q   &kp X   &kp M   &kp C    &kp V       &kp K       &kp P    &comma_morph  &dot_morph  &qmark_morph
-                            XXX     SMRT_NUM SMRT_SHFT   &spc_morph  &mo_sym  XXX >;
+                            XXX     SMRT_NUM &sk LSHIFT   &spc_morph  &mo_sym  XXX >;
         };
         num_layer {
             bindings = <
@@ -213,14 +206,15 @@ ZMK_BEHAVIOR(qmark_morph, mod_morph,
 )
 
 // tap: space | shift + tap: dot -> space -> sticky shift
+// triggers on LSHFT but emits RSHFT so that it does not trigger in a loop
 ZMK_BEHAVIOR(spc_morph, mod_morph,
     bindings = <&kp SPACE>, <&dot_spc>;
-    mods = <(MOD_LSFT|MOD_RSFT)>;
+    mods = <(MOD_LSFT)>;
 )
 ZMK_BEHAVIOR(dot_spc, macro,
-    wait-ms = <0>;
+    wait-ms = <5>;
     tap-ms = <5>;
-    bindings = <&kp DOT &kp SPACE &sk LSHFT>;
+    bindings = <&kp DOT &kp SPACE &sk RSHFT>;
 )
 
 // COMBOS
