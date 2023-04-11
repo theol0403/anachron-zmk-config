@@ -261,7 +261,7 @@ ZMK_BEHAVIOR(dot_spc, macro,
 //         ╰─────────────┴─────────────╯
 // use global-quick-tap-ms for combos (requires PR 1387)
 #undef COMBO_HOOK
-#define COMBO_HOOK global-quick-tap-ms = <150>;
+#define COMBO_HOOK global-quick-tap-ms = <100>;
 // combos on every layer
 #define GLOBAL_COMBO(name, keypos, bindings) ZMK_COMBO(name, bindings, keypos, ALL, 30)
 GLOBAL_COMBO(esc, LT3 LT2, &kp ESC)
@@ -283,7 +283,7 @@ NUM_COMBO(dot, RM1 RM2, &kp DOT)
 // it relies on a patch I made to zmk which allows partial-holds when releasing the key while holding the thumb
 // thumb combos are implemented using a few hacks that solve all edge cases
 // the macro is used to enable the layer while the combo is held so that other keys on the layer can be used
-#define THUMB_COMBO_GENERAL(thumb_layer, thumb, combo_layers, keypos, combo_bindings, combo_extra) \
+#define THUMB_COMBO_GENERAL(thumb_layer, thumb, combo_layers, keypos, combo_bindings) \
     ZMK_BEHAVIOR(macro_thumb_##thumb_layer##_##thumb##_##keypos, macro, \
         wait-ms = <0>; \
         tap-ms = <0>; \
@@ -299,18 +299,18 @@ NUM_COMBO(dot, RM1 RM2, &kp DOT)
         combos { \
             compatible = "zmk,combos"; \
             combo_thumb_##thumb_layer##_##thumb##_##keypos { \
-                timeout-ms = <40>; \
+                timeout-ms = <50>; \
+                layers = <combo_layers>; \
                 key-positions = <thumb keypos>; \
                 bindings = <&macro_thumb_##thumb_layer##_##thumb##_##keypos>; \
                 partial-hold-positions = <thumb>; \
-                layers = <combo_layers>; \
+                slow-release;  \
+                slow-release-positions = <keypos>; \
                 COMBO_HOOK \
-                combo_extra \
             }; \
         }; \
     };
-#define THUMB_COMBO(thumb_layer, thumb, combo_layers, keypos, combo_bindings) THUMB_COMBO_GENERAL(thumb_layer, thumb, combo_layers, keypos, combo_bindings, )
-#define THUMB_MOD_COMBO(thumb_layer, thumb, combo_layers, keypos, combo_bindings) THUMB_COMBO_GENERAL(thumb_layer, thumb, combo_layers, keypos, combo_bindings, slow-release; slow-release-positions = <keypos>;)
+#define THUMB_COMBO(thumb_layer, thumb, combo_layers, keypos, combo_bindings) THUMB_COMBO_GENERAL(thumb_layer, thumb, combo_layers, keypos, combo_bindings)
 
 // right thumb combos with right hand SYM layer
 #define SYM_THUMB_COMBO(keypos, bindings) THUMB_COMBO(SYM, RH1, BASE NUM, keypos, bindings)
@@ -350,17 +350,16 @@ SYM_THUMB_CROSS_COMBO(LB0, &kp RBRC)
 
 // left thumb combos with left hand NUM layer
 #define NUM_THUMB_COMBO(keypos, bindings) THUMB_COMBO(NUM, LH1, BASE SYM, keypos, bindings)
-#define NUM_THUMB_MOD_COMBO(keypos, bindings) THUMB_MOD_COMBO(NUM, LH1, BASE SYM, keypos, bindings)
 NUM_THUMB_COMBO(LT4, &swapper)
 NUM_THUMB_COMBO(LT3, &kp HASH)
 NUM_THUMB_COMBO(LT2, &kp DLLR)
 NUM_THUMB_COMBO(LT1, &kp PRCNT)
 NUM_THUMB_COMBO(LT0, &kp CARET)
-NUM_THUMB_MOD_COMBO(LM4, &sk LGUI)
-NUM_THUMB_MOD_COMBO(LM3, &sk LALT)
-NUM_THUMB_MOD_COMBO(LM2, &sk LCTRL)
-NUM_THUMB_MOD_COMBO(LM1, &sk LSHFT)
-NUM_THUMB_MOD_COMBO(LM0, &kp LGUI)
+NUM_THUMB_COMBO(LM4, &sk LGUI)
+NUM_THUMB_COMBO(LM3, &sk LALT)
+NUM_THUMB_COMBO(LM2, &sk LCTRL)
+NUM_THUMB_COMBO(LM1, &sk LSHFT)
+NUM_THUMB_COMBO(LM0, &kp LGUI)
 NUM_THUMB_COMBO(LB4, S_UNDO)
 NUM_THUMB_COMBO(LB3, S_CUT)
 NUM_THUMB_COMBO(LB2, S_COPY)
