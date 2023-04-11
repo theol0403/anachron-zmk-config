@@ -35,6 +35,8 @@
 // - Consider making symbol, num, and fun mo sticky
 // - Figure out a nice way to tap GUI
 // - Consider better ways to activate BT
+// - Investigate media keys (brightness, display toggle, music)
+// - Think of uses for empty space
 
 &sk {  // sticky-key config
     release-after-ms = <2000>;  // release after timeout
