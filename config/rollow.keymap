@@ -263,17 +263,19 @@ ZMK_BEHAVIOR(dot_spc, macro,
 #undef COMBO_HOOK
 #define COMBO_HOOK global-quick-tap-ms = <100>;
 // combos on every layer
-#define GLOBAL_COMBO(name, keypos, bindings) ZMK_COMBO(name, bindings, keypos, ALL, 30)
+#define GLOBAL_COMBO(name, keypos, bindings) ZMK_COMBO(name, bindings, keypos, ALL, 40)
 GLOBAL_COMBO(esc, LT3 LT2, &kp ESC)
 GLOBAL_COMBO(tab, LT2 LT1, &kp TAB)
+GLOBAL_COMBO(gui, LB4 LB3, &kp GUI)
 GLOBAL_COMBO(rep, LB3 LB2, &key_repeat)
 GLOBAL_COMBO(ent, LB2 LB1, &kp ENTER)
+GLOBAL_COMBO(word, RT1 RT2, &caps_word)
 GLOBAL_COMBO(bksp, RB1 RB2, &kp BSPC)
 GLOBAL_COMBO(del, RB2 RB3, &kp DEL)
 GLOBAL_COMBO(numl, RB3 RB4, &num_word)
 
 // combos on the numpad
-#define NUM_COMBO(name, keypos, bindings) ZMK_COMBO(name, bindings, keypos, NUM, 30)
+#define NUM_COMBO(name, keypos, bindings) ZMK_COMBO(name, bindings, keypos, NUM, 40)
 NUM_COMBO(lpar, RT1 RT2, &kp LPAR)
 NUM_COMBO(rpar, RT2 RT3, &kp RPAR)
 NUM_COMBO(dot, RM1 RM2, &kp DOT)
@@ -359,7 +361,7 @@ NUM_THUMB_COMBO(LM4, &sk LGUI)
 NUM_THUMB_COMBO(LM3, &sk LALT)
 NUM_THUMB_COMBO(LM2, &sk LCTRL)
 NUM_THUMB_COMBO(LM1, &sk LSHFT)
-NUM_THUMB_COMBO(LM0, &kp LGUI)
+NUM_THUMB_COMBO(LM0, &mo FUN)
 NUM_THUMB_COMBO(LB4, S_UNDO)
 NUM_THUMB_COMBO(LB3, S_CUT)
 NUM_THUMB_COMBO(LB2, S_COPY)
