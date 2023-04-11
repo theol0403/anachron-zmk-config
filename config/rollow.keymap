@@ -24,22 +24,15 @@
 
 // TODO:
 // - Encoders:
-//   - scroll operation
-//   - button press
-// - OLED
-// - Numlock
-//   - Tapdance
-//   - Combo
-//   - Fn key undoes numlock
-// - Caps word
-// - Split up config into files
+//   - fix right encoder
+// - Fix left OLED
 // - Fix sticky keys for cadding (use the wrapping around behavior)
 // - Layer features
-//   - Repeat key
-//   - Fn num layer
-//   - Alt tab
+//   - Fn layer
 // - Add num+fn+left hand BT switcher
-// - Investigate kconfig options
+// - Consider HRM
+// - Consider mouse layer
+// - Triple tap num lock
 
 &sk {  // sticky-key config
     release-after-ms = <2000>;  // release after timeout
@@ -50,16 +43,20 @@
     ignore-modifiers;          // allow chording sticky mods & layers
 };
 
-&caps_word {  // mods deactivate caps-word, requires PR #1441
+&caps_word {  // mods deactivate caps-word, requires PR #1451
     /delete-property/ ignore-modifiers;
+    /delete-property/ ignore-numbers;
+    continue-list = <BACKSPACE ENTER DELETE UNDERSCORE MINUS F24>;
 };
 
 &num_word {  // num-word, requires PR #1441
     layers = <NUM>;
+    continue-list = <BACKSPACE ENTER DELETE UNDERSCORE MINUS PLUS ASTRK EQUAL FSLH DOT LPAR RPAR HASH DLLR PRCNT CARET LEFT RIGHT UP DOWN F24>;
 };
 
 &key_repeat {
     usage-pages = <HID_USAGE_KEY HID_USAGE_CONSUMER>;
+    ignore-keycodes = <F24>; // requires custom patch
 };
 
 / {
@@ -96,8 +93,8 @@
             compatible = "zmk,behavior-tap-dance"; 
             label = "SMRT_NUM_DANCE";
             #binding-cells = <0>; 
-            tapping-term-ms = <200>; 
-            bindings = <&num_word>, <&sl NUM>; // reverse this for sticky-num on single tap
+            tapping-term-ms = <300>; 
+            bindings = <&sl NUM>, <&num_word>; // reverse this for sticky-num on single tap
         };
         
         // Alt+Tab swapper, requires PR #1366
@@ -161,21 +158,27 @@
             &kp B   &kp L   &kp D   &kp W    &kp Z       &kp APOS    &kp F    &kp O         &kp U       &kp J 
             &kp N   &kp R   &kp T   &kp S    &kp G       &kp Y       &kp H    &kp A         &kp E       &kp I 
             &kp Q   &kp X   &kp M   &kp C    &kp V       &kp K       &kp P    &comma_morph  &dot_morph  &qmark_morph
-                            XXX     SMRT_NUM &sk LSHIFT   &spc_morph  &mo_sym  XXX >;
+                    &kp C_MUTE      SMRT_NUM SMRT_SHFT   &spc_morph  &mo_sym  XXX 
+            >;
+            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp UP DOWN>;
         };
         num_layer {
             bindings = <
             &swapper  &kp HASH  &kp DLLR   &kp PRCNT  &kp CARET   &kp PLUS  &kp N7   &kp N8  &kp N9  &kp ASTRK 
             &sk LGUI  &sk LALT  &sk LCTRL  &sk LSHFT  &kp LGUI    &kp N3    &kp N0   &kp N1  &kp N2  &kp EQUAL 
             S_UNDO    S_CUT     S_COPY     S_PASTE    S_REDO      &kp MINUS &kp N4   &kp N5  &kp N6  &kp FSLH 
-                                XXX        &mo NUM    &kp SPACE   &kp SPACE &mo SYM  XXX >;
+                                XXX        &mo NUM    &kp SPACE   &kp SPACE &mo SYM  XXX 
+            >;
+            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp UP DOWN>;
         };
         sym_layer {
             bindings = <
             &kp TILDE  &kp PIPE  &kp UNDER  &kp LBKT  &kp RBKT   &kp HOME    &kp PG_DN  &kp PG_UP  &kp END    &kp ESC 
             &kp GRAVE  &kp AMPS  &kp AT     &kp LPAR  &kp RPAR   &kp LEFT    &kp DOWN   &kp UP     &kp RIGHT  &kp ENTER 
             &kp BSLH   &kp LT    &kp GT     &kp LBRC  &kp RBRC   &key_repeat &kp BSPC   &kp DEL    &kp TAB    &kp CAPS 
-                                 XXX        &mo NUM   ___        ___         &mo SYM    XXX >;
+                                 XXX        &mo NUM   ___        ___         &mo SYM    XXX 
+            >;
+            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp UP DOWN>;
         };
  
         util_layer {
@@ -183,7 +186,9 @@
             &bootloader XXX       XXX        XXX       &kp PSCRN   &kp HOME     &kp PG_DN  &kp PG_UP   &kp END    &kp ESC 
             &sk LGUI    &sk LALT  &sk LCTRL  &sk LSHFT &kp LGUI    &kp LEFT     &kp DOWN   &kp UP      &kp RIGHT  &kp ENTER 
             S_UNDO      S_CUT     S_COPY     S_PASTE   S_REDO      &key_repeat  &kp BSPC   &kp DEL     &kp TAB    &kp CAPS 
-                                  XXX        ___       ___         ___          ___        XXX >;
+                                  XXX        ___       ___         ___          ___        XXX 
+            >;
+            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp UP DOWN>;
         };
     };
 };
@@ -226,16 +231,16 @@ ZMK_BEHAVIOR(dot_spc, macro,
 //         ╰─────────────┴─────────────╯
 // use global-quick-tap-ms for combos (requires PR 1387)
 #undef COMBO_HOOK
-#define COMBO_HOOK global-quick-tap-ms = <100>;
+#define COMBO_HOOK global-quick-tap-ms = <150>;
 // combos on every layer
 #define GLOBAL_COMBO(name, keypos, bindings) ZMK_COMBO(name, bindings, keypos, ALL, 30)
 GLOBAL_COMBO(esc, LT3 LT2, &kp ESC)
 GLOBAL_COMBO(tab, LT2 LT1, &kp TAB)
-// GLOBAL_COMBO(ent, LB3 LB2, &kp REP)
-GLOBAL_COMBO(rep, LB2 LB1, &kp ENTER)
+GLOBAL_COMBO(rep, LB3 LB2, &key_repeat)
+GLOBAL_COMBO(ent, LB2 LB1, &kp ENTER)
 GLOBAL_COMBO(bksp, RB1 RB2, &kp BSPC)
 GLOBAL_COMBO(del, RB2 RB3, &kp DEL)
-// GLOBAL_COMBO(numl, RB3 RB4, NUML)
+GLOBAL_COMBO(numl, RB3 RB4, &num_word)
 
 // combos on the numpad
 #define NUM_COMBO(name, keypos, bindings) ZMK_COMBO(name, bindings, keypos, NUM, 30)
