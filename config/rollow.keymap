@@ -15,6 +15,8 @@
 #define NUM 1
 #define SYM 2
 #define UTIL 3
+#define FUN 4
+#define BT 5
 
 #define S_UNDO &kp C_AC_UNDO
 #define S_CUT &kp C_AC_CUT
@@ -27,12 +29,12 @@
 //   - fix right encoder
 // - Fix left OLED
 // - Fix sticky keys for cadding (use the wrapping around behavior)
-// - Layer features
-//   - Fn layer
-// - Add num+fn+left hand BT switcher
 // - Consider HRM
 // - Consider mouse layer
 // - Triple tap num lock
+// - Consider making symbol, num, and fun mo sticky
+// - Figure out a nice way to tap GUI
+// - Consider better ways to activate BT
 
 &sk {  // sticky-key config
     release-after-ms = <2000>;  // release after timeout
@@ -57,6 +59,12 @@
 &key_repeat {
     usage-pages = <HID_USAGE_KEY HID_USAGE_CONSUMER>;
     ignore-keycodes = <F24>; // requires custom patch
+};
+
+&lt {  // layer-tap config
+    flavor = "balanced";
+    tapping-term-ms = <200>;
+    quick-tap-ms = <175>;
 };
 
 / {
@@ -164,9 +172,9 @@
         };
         num_layer {
             bindings = <
-            &swapper  &kp HASH  &kp DLLR   &kp PRCNT  &kp CARET   &kp PLUS  &kp N7   &kp N8  &kp N9  &kp ASTRK 
-            &sk LGUI  &sk LALT  &sk LCTRL  &sk LSHFT  &kp LGUI    &kp N3    &kp N0   &kp N1  &kp N2  &kp EQUAL 
-            S_UNDO    S_CUT     S_COPY     S_PASTE    S_REDO      &kp MINUS &kp N4   &kp N5  &kp N6  &kp FSLH 
+            &swapper  &kp HASH  &kp DLLR   &kp PRCNT  &kp CARET   &kp PLUS  &kp N6   &kp N7  &kp N8  &kp ASTRK 
+            &sk LGUI  &sk LALT  &sk LCTRL  &sk LSHFT  &mo FUN     &kp EQUAL &kp N0   &kp N1  &kp N2  &kp N9 
+            S_UNDO    S_CUT     S_COPY     S_PASTE    S_REDO      &kp MINUS &kp N3   &kp N4  &kp N5  &lt BT FSLH 
                                 XXX        &mo NUM    &kp SPACE   &kp SPACE &mo SYM  XXX 
             >;
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp UP DOWN>;
@@ -184,9 +192,29 @@
         util_layer {
             bindings = <
             &bootloader XXX       XXX        XXX       &kp PSCRN   &kp HOME     &kp PG_DN  &kp PG_UP   &kp END    &kp ESC 
-            &sk LGUI    &sk LALT  &sk LCTRL  &sk LSHFT &kp LGUI    &kp LEFT     &kp DOWN   &kp UP      &kp RIGHT  &kp ENTER 
+            &sk LGUI    &sk LALT  &sk LCTRL  &sk LSHFT XXX         &kp LEFT     &kp DOWN   &kp UP      &kp RIGHT  &kp ENTER 
             S_UNDO      S_CUT     S_COPY     S_PASTE   S_REDO      &key_repeat  &kp BSPC   &kp DEL     &kp TAB    &kp CAPS 
                                   XXX        ___       ___         ___          ___        XXX 
+            >;
+            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp UP DOWN>;
+        };
+
+        fun_layer {
+            bindings = <
+            ___       ___       ___        ___        ___    &kp F12  &kp F6      &kp F7  &kp F8  ___ 
+            &sk LGUI  &sk LALT  &sk LCTRL  &sk LSHFT  ___    &kp F11  &kp INSERT  &kp F1  &kp F2  &kp F9
+            ___       ___       ___        ___        ___    &kp F10  &kp F3      &kp F4  &kp F5  ___
+                                ___        ___        ___    ___      ___         ___ 
+            >;
+            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp UP DOWN>;
+        };
+
+        bt_layer {
+            bindings = <
+            ___  ___  ___  ___  ___   &bt BT_NXT  ___           ___           ___           ___ 
+            ___  ___  ___  ___  ___   &bt BT_CLR  &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  ___ 
+            ___  ___  ___  ___  ___   &bt BT_PRV  &bt BT_SEL 3  &bt BT_SEL 4  &bt BT_SEL 5  ___
+                      ___  ___  ___   ___         ___           ___ 
             >;
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp UP DOWN>;
         };
