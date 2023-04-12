@@ -38,6 +38,7 @@
 // - Consider better ways to activate BT
 // - Investigate media keys (brightness, display toggle, music)
 // - Think of uses for empty space
+// - Think of better GUI
 
 &sk {  // sticky-key config
     release-after-ms = <2000>;  // release after timeout
@@ -267,7 +268,6 @@ ZMK_BEHAVIOR(dot_spc, macro,
 #define GLOBAL_COMBO(name, keypos, bindings) ZMK_COMBO(name, bindings, keypos, ALL, 40)
 GLOBAL_COMBO(esc, LT3 LT2, &kp ESC)
 GLOBAL_COMBO(tab, LT2 LT1, &kp TAB)
-GLOBAL_COMBO(gui, LB4 LB3, &kp LGUI)
 GLOBAL_COMBO(rep, LB3 LB2, &key_repeat)
 GLOBAL_COMBO(ent, LB2 LB1, &kp ENTER)
 GLOBAL_COMBO(word, RT1 RT2, &caps_word)
