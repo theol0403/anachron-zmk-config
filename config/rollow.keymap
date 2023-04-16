@@ -33,19 +33,15 @@
 // - Consider HRM
 // - Consider mouse layer
 // - Triple tap num lock/caps lock
-// - Consider making symbol, num, and fun mo sticky
-// - Make FN key sticky
 // - Figure out a nice way to tap GUI
 // - Consider better ways to activate BT
 // - Investigate media keys (brightness, display toggle, music)
 // - Think of uses for empty space
-// - Think of better GUI
 // - Organize config
 // - Add text expansion macros
 // - Look into magic key
 // - Try to put dynamic macros on num
 // - Add programming bigrams
-// - Add vertial bracket combo
 // - Add delete word
 
 &sk {  // sticky-key config
@@ -54,7 +50,7 @@
 };
 
 &sl {  // sticky-layer config
-    release-after-ms = <1000>;  // release after timeout
+    release-after-ms = <2000>;  // release after timeout
     // ignore-modifiers;          // allow chording sticky mods & layers
 };
 
@@ -103,7 +99,7 @@
             compatible = "zmk,behavior-hold-tap"; 
             label = "SMRT_NUM";
             #binding-cells = <2>; 
-            flavor = "balanced"; 
+            flavor = "hold-preferred"; 
             tapping-term-ms = <200>; 
             quick-tap-ms = <175>; 
             bindings = <&mo>, <&num_dance>; 
@@ -121,9 +117,9 @@
         #define SMRT_FUN &smrt_layer FUN FUN
         smrt_layer: smrt_layer { 
             compatible = "zmk,behavior-hold-tap"; 
-            label = "SMRT_NUM";
+            label = "SMRT_LAYER";
             #binding-cells = <2>; 
-            flavor = "balanced"; 
+            flavor = "hold-preferred"; 
             tapping-term-ms = <200>; 
             quick-tap-ms = <175>; 
             bindings = <&mo>, <&sl>; 
