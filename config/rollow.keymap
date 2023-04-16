@@ -128,6 +128,18 @@
                 ; 
             ignored-key-positions = <LM1>; // shift-alt-tab 
         };
+        
+        // tap: sticky-mod | hold: mod
+        #define SK(mod) &smrt_mod mod mod
+        smrt_mod: smrt_mod { 
+            compatible = "zmk,behavior-hold-tap"; 
+            label = "SMRT_MOD"; 
+            #binding-cells = <2>; 
+            flavor = "hold-preferred"; 
+            tapping-term-ms = <200>; 
+            bindings = <&kp>, <&sk>; 
+            hold-while-undecided;
+        };
     };
 
     conditional_layers {
@@ -201,7 +213,7 @@
         num_layer {
             bindings = <
             &swapper  &kp HASH  &kp DLLR   &kp PRCNT  &kp CARET   &kp PLUS  &kp N6   &kp N7  &kp N8  &kp ASTRK 
-            &sk LGUI  &sk LALT  &sk LCTRL  &sk LSHFT  &mo FUN     &kp EQUAL &kp N0   &kp N1  &kp N2  &kp N9 
+            SK(LGUI)  SK(LALT)  SK(LCTRL)  SK(LSHFT)  &mo FUN     &kp EQUAL &kp N0   &kp N1  &kp N2  &kp N9 
             S_UNDO    S_CUT     S_COPY     S_PASTE    S_REDO      &kp MINUS &kp N3   &kp N4  &kp N5  &lt BT FSLH 
                                 XXX        &mo NUM    &kp SPACE   &kp SPACE &mo SYM  XXX 
             >;
@@ -220,7 +232,7 @@
         util_layer {
             bindings = <
             &bootloader REC_1     PLAY_1     PLAY_2    REC_2       &kp HOME     &kp PG_DN  &kp PG_UP   &kp END    &kp ESC 
-            &sk LGUI    &sk LALT  &sk LCTRL  &sk LSHFT &kp PSCRN   &kp LEFT     &kp DOWN   &kp UP      &kp RIGHT  &kp ENTER 
+            SK(LGUI)    SK(LALT)  SK(LCTRL)  SK(LSHFT) &kp PSCRN   &kp LEFT     &kp DOWN   &kp UP      &kp RIGHT  &kp ENTER 
             S_UNDO      S_CUT     S_COPY     S_PASTE   S_REDO      &key_repeat  &kp BSPC   &kp DEL     &kp TAB    &kp CAPS 
                                   XXX        ___       ___         ___          ___        XXX 
             >;
@@ -230,7 +242,7 @@
         fun_layer {
             bindings = <
             ___       ___       ___        ___        ___    &kp F12  &kp F6      &kp F7  &kp F8  ___ 
-            &sk LGUI  &sk LALT  &sk LCTRL  &sk LSHFT  ___    &kp F11  &kp INSERT  &kp F1  &kp F2  &kp F9
+            SK(LGUI)  SK(LALT)  SK(LCTRL)  SK(LSHFT)  ___    &kp F11  &kp INSERT  &kp F1  &kp F2  &kp F9
             ___       ___       ___        ___        ___    &kp F10  &kp F3      &kp F4  &kp F5  ___
                                 ___        ___        ___    ___      ___         ___ 
             >;
@@ -391,10 +403,10 @@ NUM_THUMB_COMBO(LT3, &kp HASH)
 NUM_THUMB_COMBO(LT2, &kp DLLR)
 NUM_THUMB_COMBO(LT1, &kp PRCNT)
 NUM_THUMB_COMBO(LT0, &kp CARET)
-NUM_THUMB_COMBO(LM4, &sk LGUI)
-NUM_THUMB_COMBO(LM3, &sk LALT)
-NUM_THUMB_COMBO(LM2, &sk LCTRL)
-NUM_THUMB_COMBO(LM1, &sk LSHFT)
+NUM_THUMB_COMBO(LM4, SK(LGUI))
+NUM_THUMB_COMBO(LM3, SK(LALT))
+NUM_THUMB_COMBO(LM2, SK(LCTRL))
+NUM_THUMB_COMBO(LM1, SK(LSHFT))
 NUM_THUMB_COMBO(LM0, &mo FUN)
 NUM_THUMB_COMBO(LB4, S_UNDO)
 NUM_THUMB_COMBO(LB3, S_CUT)
