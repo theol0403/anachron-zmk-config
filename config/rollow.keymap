@@ -116,6 +116,18 @@
             tapping-term-ms = <300>; 
             bindings = <&sl NUM>, <&num_word>; // reverse this for sticky-num on single tap
         };
+
+        #define SMRT_SYM &smrt_layer SYM SYM
+        #define SMRT_FUN &smrt_layer FUN FUN
+        smrt_layer: smrt_layer { 
+            compatible = "zmk,behavior-hold-tap"; 
+            label = "SMRT_NUM";
+            #binding-cells = <2>; 
+            flavor = "balanced"; 
+            tapping-term-ms = <200>; 
+            quick-tap-ms = <175>; 
+            bindings = <&mo>, <&sl>; 
+        }; 
         
         // Alt+Tab swapper, requires PR #1366
         swapper: swapper { 
@@ -163,9 +175,9 @@
             tap-ms = <0>;
             bindings
                 = <&macro_tap &kp F24>
-                , <&macro_press &mo SYM>
+                , <&macro_press SMRT_SYM>
                 , <&macro_pause_for_release>
-                , <&macro_release &mo SYM>
+                , <&macro_release SMRT_SYM>
                 ;
         };
         mo_num: mo_num {
@@ -214,7 +226,7 @@
         num_layer {
             bindings = <
             &swapper  &kp HASH  &kp DLLR   &kp PRCNT  &kp CARET   &kp PLUS  &kp N6   &kp N7  &kp N8  &kp ASTRK 
-            SK(LGUI)  SK(LALT)  SK(LCTL)   SK(LSFT)   &mo FUN     &kp EQUAL &kp N0   &kp N1  &kp N2  &kp N9 
+            SK(LGUI)  SK(LALT)  SK(LCTL)   SK(LSFT)   SMRT_FUN    &kp EQUAL &kp N0   &kp N1  &kp N2  &kp N9 
             S_UNDO    S_CUT     S_COPY     S_PASTE    S_REDO      &kp MINUS &kp N3   &kp N4  &kp N5  &lt BT FSLH 
                                 XXX        &mo NUM    &kp SPACE   &kp SPACE &mo SYM  XXX 
             >;
@@ -408,7 +420,7 @@ NUM_THUMB_COMBO(LM4, SK(LGUI))
 NUM_THUMB_COMBO(LM3, SK(LALT))
 NUM_THUMB_COMBO(LM2, SK(LCTL) )
 NUM_THUMB_COMBO(LM1, SK(LSFT))
-NUM_THUMB_COMBO(LM0, &mo FUN)
+NUM_THUMB_COMBO(LM0, SMRT_FUN)
 NUM_THUMB_COMBO(LB4, S_UNDO)
 NUM_THUMB_COMBO(LB3, S_CUT)
 NUM_THUMB_COMBO(LB2, S_COPY)
