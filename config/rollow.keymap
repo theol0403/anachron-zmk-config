@@ -54,7 +54,8 @@
 };
 
 &sl {  // sticky-layer config
-    ignore-modifiers;          // allow chording sticky mods & layers
+    release-after-ms = <1000>;  // release after timeout
+    // ignore-modifiers;          // allow chording sticky mods & layers
 };
 
 &caps_word {  // mods deactivate caps-word, requires PR #1451
@@ -136,7 +137,7 @@
             label = "SMRT_MOD"; 
             #binding-cells = <2>; 
             flavor = "hold-preferred"; 
-            tapping-term-ms = <120>; 
+            tapping-term-ms = <150>; 
             bindings = <&kp>, <&sk>; 
             hold-while-undecided;
         };
