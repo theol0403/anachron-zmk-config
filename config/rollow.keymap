@@ -319,36 +319,36 @@ NUM_COMBO(dot, RM1 RM2, &kp DOT)
 // it relies on a patch I made to zmk which allows partial-holds when releasing the key while holding the thumb
 // thumb combos are implemented using a few hacks that solve all edge cases
 // the macro is used to enable the layer while the combo is held so that other keys on the layer can be used
-#define THUMB_COMBO_GENERAL(thumb_layer, thumb, combo_layers, keypos, combo_bindings) \
-    ZMK_BEHAVIOR(macro_thumb_##thumb_layer##_##thumb##_##keypos, macro, \
+#define THUMB_COMBO_GENERAL(thumb_behavior, thumb_param, thumb, combo_layers, keypos, combo_bindings) \
+    ZMK_BEHAVIOR(macro_thumb_##thumb_param##_##thumb##_##keypos, macro, \
         wait-ms = <0>; \
         tap-ms = <0>; \
         bindings \
-            = <&macro_press &mo thumb_layer> \
+            = <&macro_press thumb_behavior thumb_param> \
             , <&macro_press combo_bindings> \
             , <&macro_pause_for_release> \
             , <&macro_release combo_bindings> \
-            , <&macro_release &mo thumb_layer> \
+            , <&macro_release thumb_behavior thumb_param> \
             ; \
     ) \
     / { \
         combos { \
             compatible = "zmk,combos"; \
-            combo_thumb_##thumb_layer##_##thumb##_##keypos { \
-                timeout-ms = <50>; \
+            combo_thumb_##thumb_param##_##thumb##_##keypos { \
+                timeout-ms = <30>; \
                 layers = <combo_layers>; \
                 key-positions = <thumb keypos>; \
-                bindings = <&macro_thumb_##thumb_layer##_##thumb##_##keypos>, <&partial_hold_position thumb &mo thumb_layer>; \
+                bindings = <&macro_thumb_##thumb_param##_##thumb##_##keypos>, <&partial_hold_position thumb thumb_behavior thumb_param>; \
                 slow-release;  \
                 slow-release-positions = <keypos>; \
                 COMBO_HOOK \
             }; \
         }; \
     };
-#define THUMB_COMBO(thumb_layer, thumb, combo_layers, keypos, combo_bindings) THUMB_COMBO_GENERAL(thumb_layer, thumb, combo_layers, keypos, combo_bindings)
+#define THUMB_LAYER_COMBO(thumb_param, thumb, combo_layers, keypos, combo_bindings) THUMB_COMBO_GENERAL(&mo, thumb_param, thumb, combo_layers, keypos, combo_bindings)
 
 // right thumb combos with right hand SYM layer
-#define SYM_THUMB_COMBO(keypos, bindings) THUMB_COMBO(SYM, RH1, BASE NUM, keypos, bindings)
+#define SYM_THUMB_COMBO(keypos, bindings) THUMB_LAYER_COMBO(SYM, RH1, BASE NUM, keypos, bindings)
 SYM_THUMB_COMBO(RT0, &kp HOME)
 SYM_THUMB_COMBO(RT1, &kp PG_DN)
 SYM_THUMB_COMBO(RT2, &kp PG_UP)
@@ -366,7 +366,7 @@ SYM_THUMB_COMBO(RB3, &kp TAB)
 // SYM_THUMB_COMBO(RB4, &kp CAPS)
 
 // right thumb combos with left hand SYM layer 
-#define SYM_THUMB_CROSS_COMBO(keypos, bindings) THUMB_COMBO(SYM, RH1, BASE, keypos, bindings)
+#define SYM_THUMB_CROSS_COMBO(keypos, bindings) THUMB_LAYER_COMBO(SYM, RH1, BASE, keypos, bindings)
 SYM_THUMB_CROSS_COMBO(LT4, &kp TILDE)
 SYM_THUMB_CROSS_COMBO(LT3, &kp PIPE)
 SYM_THUMB_CROSS_COMBO(LT2, &kp UNDER)
@@ -384,7 +384,7 @@ SYM_THUMB_CROSS_COMBO(LB1, &kp LBRC)
 SYM_THUMB_CROSS_COMBO(LB0, &kp RBRC)
 
 // left thumb combos with left hand NUM layer
-#define NUM_THUMB_COMBO(keypos, bindings) THUMB_COMBO(NUM, LH1, BASE SYM, keypos, bindings)
+#define NUM_THUMB_COMBO(keypos, bindings) THUMB_LAYER_COMBO(NUM, LH1, BASE SYM, keypos, bindings)
 NUM_THUMB_COMBO(LT4, &swapper)
 NUM_THUMB_COMBO(LT3, &kp HASH)
 NUM_THUMB_COMBO(LT2, &kp DLLR)
@@ -402,7 +402,7 @@ NUM_THUMB_COMBO(LB1, S_PASTE)
 NUM_THUMB_COMBO(LB0, S_REDO)
 
 // left thumb combos with right hand NUM layer
-#define NUM_THUMB_CROSS_COMBO(keypos, bindings) THUMB_COMBO(NUM, LH1, BASE, keypos, bindings)
+#define NUM_THUMB_CROSS_COMBO(keypos, bindings) THUMB_LAYER_COMBO(NUM, LH1, BASE, keypos, bindings)
 NUM_THUMB_CROSS_COMBO(RT0, &kp PLUS)
 NUM_THUMB_CROSS_COMBO(RT1, &kp N6)
 NUM_THUMB_CROSS_COMBO(RT2, &kp N7)
@@ -418,6 +418,40 @@ NUM_THUMB_CROSS_COMBO(RB1, &kp N3)
 NUM_THUMB_CROSS_COMBO(RB2, &kp N4)
 NUM_THUMB_CROSS_COMBO(RB3, &kp N5)
 NUM_THUMB_CROSS_COMBO(RB4, &kp SLASH)
+
+#define SHFT_THUMB_COMBO(keypos, bindings) THUMB_COMBO_GENERAL(&kp, LSFT, LH0, BASE, keypos, bindings)
+SHFT_THUMB_COMBO(LT4, &kp B)
+SHFT_THUMB_COMBO(LT3, &kp L)
+SHFT_THUMB_COMBO(LT2, &kp D)
+SHFT_THUMB_COMBO(LT1, &kp W)
+SHFT_THUMB_COMBO(LT0, &kp Z)
+SHFT_THUMB_COMBO(LM4, &kp N)
+SHFT_THUMB_COMBO(LM3, &kp R)
+SHFT_THUMB_COMBO(LM2, &kp T)
+SHFT_THUMB_COMBO(LM1, &kp S)
+SHFT_THUMB_COMBO(LM0, &kp G)
+SHFT_THUMB_COMBO(LB4, &kp Q)
+SHFT_THUMB_COMBO(LB3, &kp X)
+SHFT_THUMB_COMBO(LB2, &kp M)
+SHFT_THUMB_COMBO(LB1, &kp C)
+SHFT_THUMB_COMBO(LB0, &kp V)
+
+SHFT_THUMB_COMBO(RT0, &kp APOS)
+SHFT_THUMB_COMBO(RT1, &kp F)
+SHFT_THUMB_COMBO(RT2, &kp O)
+SHFT_THUMB_COMBO(RT3, &kp U)
+SHFT_THUMB_COMBO(RT4, &kp J)
+SHFT_THUMB_COMBO(RM0, &kp Y)
+SHFT_THUMB_COMBO(RM1, &kp H)
+SHFT_THUMB_COMBO(RM2, &kp A)
+SHFT_THUMB_COMBO(RM3, &kp E)
+SHFT_THUMB_COMBO(RM4, &kp I)
+SHFT_THUMB_COMBO(RB0, &kp K)
+SHFT_THUMB_COMBO(RB1, &kp P)
+SHFT_THUMB_COMBO(RB2, &comma_morph)
+SHFT_THUMB_COMBO(RB3, &dot_morph)
+SHFT_THUMB_COMBO(RB4, &qmark_morph)
+
 
 // combo_shift_left { 
 //     key-positions = <RH1 LH1 LM2 RM0>; 
