@@ -190,10 +190,10 @@
         compatible = "zmk,keymap";
         default_layer {
             bindings = <
-            &kp B   &kp L   &kp D   &kp W    &kp Z       &kp APOS    &kp F    &kp O         &kp U       &kp J 
-            &kp N   &kp R   &kp T   &kp S    &kp G       &kp Y       &kp H    &kp A         &kp E       &kp I 
-            &kp Q   &kp X   &kp M   &kp C    &kp V       &kp K       &kp P    &comma_morph  &dot_morph  &qmark_morph
-                    &kp C_MUTE      SMRT_NUM SMRT_SHFT   &spc_morph  SMRT_SYM XXX 
+            &kp B   &kp L   &kp D   &kp W    &kp Z       &kp APOS   &kp F    &kp O         &kp U       &kp J 
+            &kp N   &kp R   &kp T   &kp S    &kp G       &kp Y      &kp H    &kp A         &kp E       &kp I 
+            &kp Q   &kp X   &kp M   &kp C    &kp V       &kp K      &kp P    &comma_morph  &dot_morph  &qmark_morph
+                    &kp C_MUTE      SMRT_NUM SMRT_SHFT   &kp SPACE  SMRT_SYM XXX 
             >;
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp UP DOWN>;
         };
@@ -266,15 +266,14 @@ ZMK_BEHAVIOR(qmark_morph, mod_morph,
 )
 
 // tap: space | shift + tap: dot -> space -> sticky shift
-// triggers on LSFT but emits RSHFT so that it does not trigger in a loop
-ZMK_BEHAVIOR(spc_morph, mod_morph,
-    bindings = <&kp SPACE>, <&dot_spc>;
-    mods = <(MOD_LSFT)>;
-)
 ZMK_BEHAVIOR(dot_spc, macro,
     wait-ms = <5>;
     tap-ms = <5>;
-    bindings = <&kp DOT &kp SPACE &sk RSHFT>;
+    bindings = <&dot_morph_cancel &kp SPACE &sk LSFT>;
+)
+ZMK_BEHAVIOR(dot_morph_cancel, mod_morph,
+    bindings = <&kp DOT>, <&kp DOT>;
+    mods = <(MOD_LSFT|MOD_RSFT)>;
 )
 
 // COMBOS
@@ -288,7 +287,7 @@ ZMK_BEHAVIOR(dot_spc, macro,
 #undef COMBO_HOOK
 #define COMBO_HOOK global-quick-tap-ms = <100>;
 // combos on every layer
-#define GLOBAL_COMBO(name, keypos, bindings) ZMK_COMBO(name, bindings, keypos, ALL, 50)
+#define GLOBAL_COMBO(name, keypos, bindings) ZMK_COMBO(name, bindings, keypos, ALL, 60)
 GLOBAL_COMBO(esc, LT3 LT2, &kp ESC)
 GLOBAL_COMBO(tab, LT2 LT1, &kp TAB)
 GLOBAL_COMBO(rep, LB3 LB2, &key_repeat)
@@ -306,6 +305,8 @@ GLOBAL_COMBO(lbrc, LT1 LM1, &kp LBRC)
 GLOBAL_COMBO(rbrc, RT1 RM1, &kp RBRC)
 GLOBAL_COMBO(lt, LT0 LM0, &kp LT)
 GLOBAL_COMBO(gt, RT0 RM0, &kp GT)
+
+GLOBAL_COMBO(dot_spc, LH0 RH0, &dot_spc)
 
 // combos on the numpad
 #define NUM_COMBO(name, keypos, bindings) ZMK_COMBO(name, bindings, keypos, NUM, 40)
