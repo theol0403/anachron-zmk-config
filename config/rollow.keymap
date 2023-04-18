@@ -43,9 +43,10 @@
 // - Try to put dynamic macros on num
 // - Add programming bigrams
 // - Add delete word
+// - Think of proper cancel key now that layers sticky
 
 &sk {  // sticky-key config
-    release-after-ms = <1500>;  // release after timeout
+    release-after-ms = <1000>;  // release after timeout
     quick-release;             // no double capitalization when rolling keys
 };
 
@@ -87,9 +88,19 @@
             compatible = "zmk,behavior-mod-morph";
             label = "SMRT_SHFT";  
             #binding-cells = <0>; 
-            bindings = <&sk LSFT>, <&caps_word>; 
+            bindings = <&smrt_shft_hold LSFT LSFT>, <&caps_word>; 
             mods = <(MOD_LSFT)>; 
         }; 
+        smrt_shft_hold: smrt_shft_hold { 
+            compatible = "zmk,behavior-hold-tap"; 
+            label = "SMRT_SHFT_HOLD";
+            #binding-cells = <2>; 
+            flavor = "balanced"; 
+            tapping-term-ms = <200>; 
+            bindings = <&kp>, <&sk>; 
+            hold-while-undecided;
+        }; 
+
         
         // tap: num-word | double-tap: sticky num-layer | hold: num-layer
         // TODO: need cancel
@@ -102,7 +113,6 @@
             tapping-term-ms = <200>; 
             bindings = <&mo>, <&num_dance>; 
         }; 
-
        num_dance: num_dance { 
             compatible = "zmk,behavior-tap-dance"; 
             label = "SMRT_NUM_DANCE";
@@ -142,7 +152,7 @@
             compatible = "zmk,behavior-hold-tap"; 
             label = "SMRT_MOD"; 
             #binding-cells = <2>; 
-            flavor = "hold-preferred"; 
+            flavor = "balanced"; 
             tapping-term-ms = <150>; 
             bindings = <&kp>, <&sk>; 
             hold-while-undecided;
