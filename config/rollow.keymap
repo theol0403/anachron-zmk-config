@@ -335,7 +335,7 @@ NUM_COMBO(dot, RM1 RM2, &kp DOT)
         combos { \
             compatible = "zmk,combos"; \
             combo_thumb_##thumb_param##_##thumb##_##keypos { \
-                timeout-ms = <30>; \
+                timeout-ms = <20>; \
                 layers = <combo_layers>; \
                 key-positions = <thumb keypos>; \
                 bindings = <&macro_thumb_##thumb_param##_##thumb##_##keypos>, <&partial_hold_position thumb thumb_behavior thumb_param>; \
