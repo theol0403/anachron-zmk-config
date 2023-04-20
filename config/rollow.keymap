@@ -26,21 +26,23 @@
 #define S_REDO &kp C_AC_REDO
 
 // TODO:
-// - Encoders:
+// - Harwdare:
 //   - fix right encoder
-// - Fix left OLED
-// - Consider HRM
-// - Consider mouse layer
-// - Triple tap num lock/caps lock
-// - Figure out a nice way to tap GUI
-// - Consider better ways to activate BT
-// - Try to put dynamic macros on num
-// - Investigate media keys (brightness, display toggle, music)
-// - Think of uses for empty space
-// - Add text expansion macros
-// - Add programming bigrams
-// - Look into magic key
-// - Add delete word
+//   - Fix left OLED
+// - Conceptual:
+//   - Consider HRM
+//   - Consider mouse layer
+//   - Investigate media keys (brightness, display toggle, music)
+// - Minor:
+//   - Triple tap num lock/caps lock
+//   - Figure out a nice way to tap GUI
+//   - Add delete word
+// - Enumerated actions:
+//   - Consider better ways to activate BT
+//   - Try to put dynamic macros on num
+// - Workflow:
+//   - Add text expansion macros
+//   - Add programming bigrams
 
 /* ------------------------ general config ----------------------- */
 // smart-layer config
