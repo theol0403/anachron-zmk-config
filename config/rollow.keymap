@@ -29,163 +29,155 @@
 // - Encoders:
 //   - fix right encoder
 // - Fix left OLED
-// - Fix sticky keys for cadding (use the wrapping around behavior)
 // - Consider HRM
 // - Consider mouse layer
 // - Triple tap num lock/caps lock
 // - Figure out a nice way to tap GUI
 // - Consider better ways to activate BT
+// - Try to put dynamic macros on num
 // - Investigate media keys (brightness, display toggle, music)
 // - Think of uses for empty space
-// - Organize config
 // - Add text expansion macros
-// - Look into magic key
-// - Try to put dynamic macros on num
 // - Add programming bigrams
+// - Look into magic key
 // - Add delete word
-// - Think of proper cancel key now that layers sticky
 
-&sk {  // sticky-key config
-    release-after-ms = <1000>;  // release after timeout
-    quick-release;             // no double capitalization when rolling keys
-};
-
-&sl {  // sticky-layer config
-    release-after-ms = <500>;  // release after timeout
-    // ignore-modifiers;          // allow chording sticky mods & layers
-};
-
-&caps_word {  // mods deactivate caps-word, requires PR #1451
-    /delete-property/ ignore-modifiers;
+/* ------------------------ general config ----------------------- */
+// smart-layer config
+&caps_word {  
+    /delete-property/ ignore-modifiers; // mods deactivate, requires PR #1451
     /delete-property/ ignore-numbers;
     continue-list = <BACKSPACE ENTER DELETE UNDERSCORE MINUS>;
 };
-
-&num_word {  // num-word, requires PR #1441
-    layers = <NUM>;
+&num_word { 
+    layers = <NUM>; // requires PR #1441
     continue-list = <BACKSPACE ENTER DELETE UNDERSCORE MINUS PLUS ASTRK EQUAL FSLH DOT LPAR RPAR HASH DLLR PRCNT CARET LEFT RIGHT UP DOWN>;
 };
 
+// key-repeat config
 &key_repeat {
-    usage-pages = <HID_USAGE_KEY HID_USAGE_CONSUMER>;
+    usage-pages = <HID_USAGE_KEY HID_USAGE_CONSUMER>; // repeat all keys
 };
 
-&lt {  // layer-tap config
+// default layer-tap config
+&lt {  
     flavor = "balanced";
     tapping-term-ms = <200>;
-    quick-tap-ms = <175>;
 };
+
+ZMK_CONDITIONAL_LAYER(NUM SYM, UTIL)
+
+/* ---------------------------- special behaviors --------------------------- */
+
+// Alt+Tab swapper, requires PR #1366
+ZMK_BEHAVIOR(swapper, tri_state,
+    bindings = <&kt LALT>, <&kp TAB>, <&kt LALT>;
+    ignored-key-positions = <LM1>; // shift-alt-tab 
+)
+
+// dynamci macros, requires PR #1351
+#define PLAY_1 &dyn_macro_1 PLAY
+#define REC_1 &dyn_macro_1 RECORD
+ZMK_BEHAVIOR(dyn_macro_1, dynamic_macro, wait-ms = <10>;)
+#define PLAY_2 &dyn_macro_2 PLAY
+#define REC_2 &dyn_macro_2 RECORD
+ZMK_BEHAVIOR(dyn_macro_2, dynamic_macro, wait-ms = <10>;)
+
+/* --------------------------- sticky key behaviors -------------------------- */
+// global config
+&sk { // sticky-key
+    release-after-ms = <1000>;  // release after timeout
+    quick-release;              // no double capitalization when rolling keys
+};
+&sl { // sticky-layer 
+    release-after-ms = <500>;  // release after timeout
+    // This is useful for enabling a layer and then pressing a bunch of sticky keys without leaving the layer. 
+    // However, this breaks tapping sl+control+key because it does not exit the layer.
+    // ignore-modifiers;
+};
+
+// all sticky keys are sticky when tapped, but momentary when held. 
+// this allows for rolling layer keys, and accessing modifiers on base, while not getting in the way.
+// this behavior is especially useful for use with a mouse because sticky odifiers don't linger
+// requires: (custom sk release timing)
+#define STICKY_TAP_MS 200
+
+// tap: sticky-mod | hold: mod
+#define SK(mod) &sk_mod mod mod
+ZMK_BEHAVIOR(sk_mod, hold_tap,
+    flavor = "balanced"; // balanced because we want to consider as tap when rolling
+    tapping-term-ms = <STICKY_TAP_MS>; 
+    bindings = <&kp>, <&sk>; 
+    hold-while-undecided; // requires (pr and release patch)
+)
+
+// tap: sticky-shift | hold: shift | shift + tap / double-tap: caps-word 
+#define SK_SHFT &sk_shft LSFT LSFT
+ZMK_BEHAVIOR(sk_shft, hold_tap,
+    flavor = "balanced"; 
+    tapping-term-ms = <STICKY_TAP_MS>; 
+    bindings = <&kp>, <&smrt_shft_morph>; 
+    hold-while-undecided;
+) 
+ZMK_BEHAVIOR(smrt_shft_morph, mod_morph,
+    mods = <(MOD_LSFT)>; // shift + tap: caps word
+    bindings = <&sk LSFT>, <&caps_word>; 
+) 
+
+// tap: sticky-layer | hold: layer
+#define SMRT_SYM &smrt_layer SYM SYM
+#define SMRT_FUN &smrt_layer FUN FUN
+ZMK_BEHAVIOR(smrt_layer, hold_tap,
+    flavor = "hold-preferred"; // in most cases we want to avoid taps
+    tapping-term-ms = <STICKY_TAP_MS>; 
+    bindings = <&mo>, <&sl>; 
+) 
+
+// tap: sticky-num | hold: num | double-tap: num-word
+#define SMRT_NUM &smrt_num NUM NUM
+ZMK_BEHAVIOR(smrt_num, hold_tap,
+    flavor = "hold-preferred"; 
+    tapping-term-ms = <STICKY_TAP_MS>; 
+    bindings = <&mo>, <&num_dance>; 
+) 
+ZMK_BEHAVIOR(num_dance, tap_dance,
+    tapping-term-ms = <300>; 
+    bindings = <&sl NUM>, <&num_word>; 
+)
+
+/* ------------------------------- mod-morphs ------------------------------- */
+// tap: comma | shift + tap: semicolon 
+ZMK_BEHAVIOR(comma_morph, mod_morph,
+    mods = <(MOD_LSFT|MOD_RSFT)>;
+    bindings = <&kp COMMA>, <&kp SEMICOLON>;
+)
+// tap: dot | shift + tap: colon 
+ZMK_BEHAVIOR(dot_morph, mod_morph,
+    bindings = <&kp DOT>, <&kp COLON>;
+    mods = <(MOD_LSFT|MOD_RSFT)>;
+)
+// tap: qmark | shift + tap: excl
+ZMK_BEHAVIOR(qmark_morph, mod_morph,
+    bindings = <&kp QMARK>, <&kp EXCL>;
+    mods = <(MOD_LSFT|MOD_RSFT)>;
+)
+
+// tap: space | shift + tap: dot -> space -> sticky shift
+ZMK_BEHAVIOR(dot_spc, macro,
+    wait-ms = <5>;
+    tap-ms = <5>;
+    bindings = <&dot_morph_cancel &kp SPACE &sk LSFT>;
+)
+ZMK_BEHAVIOR(dot_morph_cancel, mod_morph,
+    bindings = <&kp DOT>, <&kp DOT>;
+    mods = <(MOD_LSFT|MOD_RSFT)>;
+)
 
 / {
     chosen {
         zmk,matrix_transform = &five_column_transform;
     };
 
-    behaviors {
-        // tap: sticky-shift | shift + tap/ double-tap: caps-word | hold: shift
-        #define SMRT_SHFT &smrt_shft
-        smrt_shft: smrt_shft { 
-            compatible = "zmk,behavior-mod-morph";
-            label = "SMRT_SHFT";  
-            #binding-cells = <0>; 
-            bindings = <&smrt_shft_hold LSFT LSFT>, <&caps_word>; 
-            mods = <(MOD_LSFT)>; 
-        }; 
-        smrt_shft_hold: smrt_shft_hold { 
-            compatible = "zmk,behavior-hold-tap"; 
-            label = "SMRT_SHFT_HOLD";
-            #binding-cells = <2>; 
-            flavor = "balanced"; 
-            tapping-term-ms = <200>; 
-            bindings = <&kp>, <&sk>; 
-            hold-while-undecided;
-        }; 
-
-        
-        // tap: num-word | double-tap: sticky num-layer | hold: num-layer
-        // TODO: need cancel
-        #define SMRT_NUM &smrt_num NUM 0
-        smrt_num: smrt_num { 
-            compatible = "zmk,behavior-hold-tap"; 
-            label = "SMRT_NUM";
-            #binding-cells = <2>; 
-            flavor = "hold-preferred"; 
-            tapping-term-ms = <200>; 
-            bindings = <&mo>, <&num_dance>; 
-        }; 
-       num_dance: num_dance { 
-            compatible = "zmk,behavior-tap-dance"; 
-            label = "SMRT_NUM_DANCE";
-            #binding-cells = <0>; 
-            tapping-term-ms = <300>; 
-            bindings = <&sl NUM>, <&num_word>; // reverse this for sticky-num on single tap
-        };
-
-        #define SMRT_SYM &smrt_layer SYM SYM
-        #define SMRT_FUN &smrt_layer FUN FUN
-        smrt_layer: smrt_layer { 
-            compatible = "zmk,behavior-hold-tap"; 
-            label = "SMRT_LAYER";
-            #binding-cells = <2>; 
-            flavor = "hold-preferred"; 
-            tapping-term-ms = <200>; 
-            bindings = <&mo>, <&sl>; 
-        }; 
-        
-        // Alt+Tab swapper, requires PR #1366
-        swapper: swapper { 
-            compatible = "zmk,behavior-tri-state"; 
-            label = "SWAPPER"; 
-            #binding-cells = <0>; 
-            bindings 
-                = <&kt LGUI>
-                , <&kp TAB>
-                , <&kt LGUI>
-                ; 
-            ignored-key-positions = <LM1>; // shift-alt-tab 
-        };
-        
-        // tap: sticky-mod | hold: mod
-        // fix for using with mouse when holding
-        #define SK(mod) &smrt_mod mod mod
-        smrt_mod: smrt_mod { 
-            compatible = "zmk,behavior-hold-tap"; 
-            label = "SMRT_MOD"; 
-            #binding-cells = <2>; 
-            flavor = "balanced"; 
-            tapping-term-ms = <150>; 
-            bindings = <&kp>, <&sk>; 
-            hold-while-undecided;
-        };
-    };
-
-    conditional_layers {
-        compatible = "zmk,conditional-layers";
-        util_layer {
-            if-layers = <NUM SYM>;
-            then-layer = <UTIL>;
-        };
-    };
-
-    macros {
-        #define PLAY_1 &dyn_macro_1 PLAY
-        #define REC_1 &dyn_macro_1 RECORD
-        dyn_macro_1: dyn_macro_1 {
-            label = "DYN_MACRO_1";
-            compatible = "zmk,behavior-dynamic-macro";
-            #binding-cells = <1>;
-            wait-ms = <10>;
-        };
-        #define PLAY_2 &dyn_macro_2 PLAY
-        #define REC_2 &dyn_macro_2 RECORD
-        dyn_macro_2: dyn_macro_2 {
-            label = "DYN_MACRO_2";
-            compatible = "zmk,behavior-dynamic-macro";
-            #binding-cells = <1>;
-        };
-        
-    };
-    
     keymap {
         compatible = "zmk,keymap";
         default_layer {
@@ -193,7 +185,7 @@
             &kp B   &kp L   &kp D   &kp W    &kp Z       &kp APOS   &kp F    &kp O         &kp U       &kp J 
             &kp N   &kp R   &kp T   &kp S    &kp G       &kp Y      &kp H    &kp A         &kp E       &kp I 
             &kp Q   &kp X   &kp M   &kp C    &kp V       &kp K      &kp P    &comma_morph  &dot_morph  &qmark_morph
-                    &kp C_MUTE      SMRT_NUM SMRT_SHFT   &kp SPACE  SMRT_SYM XXX 
+                    &kp C_MUTE      SMRT_NUM SK_SHFT     &kp SPACE  SMRT_SYM XXX 
             >;
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp UP DOWN>;
         };
@@ -202,7 +194,7 @@
             &swapper  &kp HASH  &kp DLLR   &kp PRCNT  &kp CARET   &kp PLUS  &kp N6   &kp N7  &kp N8  &kp ASTRK 
             SK(LGUI)  SK(LALT)  SK(LCTL)   SK(LSFT)   SMRT_FUN    &kp EQUAL &kp N0   &kp N1  &kp N2  &kp N9 
             S_UNDO    S_CUT     S_COPY     S_PASTE    S_REDO      &kp MINUS &kp N3   &kp N4  &kp N5  &lt BT FSLH 
-                                XXX        &mo NUM    &kp SPACE   &kp SPACE &mo SYM  XXX 
+                                XXX        ___        &kp SPACE   &kp SPACE ___      XXX 
             >;
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp UP DOWN>;
         };
@@ -211,7 +203,7 @@
             &kp TILDE  &kp PIPE  &kp UNDER  &kp LBKT  &kp RBKT   &kp HOME    &kp PG_DN  &kp PG_UP  &kp END    &kp ESC 
             &kp GRAVE  &kp AMPS  &kp AT     &kp LPAR  &kp RPAR   &kp LEFT    &kp DOWN   &kp UP     &kp RIGHT  &kp ENTER 
             &kp BSLH   &kp LT    &kp GT     &kp LBRC  &kp RBRC   &key_repeat &kp BSPC   &kp DEL    &kp TAB    &kp CAPS 
-                                 XXX        &mo NUM   ___        ___         &mo SYM    XXX 
+                                 XXX        ___       ___        ___         ___        XXX 
             >;
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp UP DOWN>;
         };
@@ -248,35 +240,7 @@
     };
 };
     
-// MOD_MORPHS
-// tap: comma | shift + tap: semicolon 
-ZMK_BEHAVIOR(comma_morph, mod_morph,
-    mods = <(MOD_LSFT|MOD_RSFT)>;
-    bindings = <&kp COMMA>, <&kp SEMICOLON>;
-)
-// tap: dot | shift + tap: colon 
-ZMK_BEHAVIOR(dot_morph, mod_morph,
-    bindings = <&kp DOT>, <&kp COLON>;
-    mods = <(MOD_LSFT|MOD_RSFT)>;
-)
-// tap: qmark | shift + tap: excl
-ZMK_BEHAVIOR(qmark_morph, mod_morph,
-    bindings = <&kp QMARK>, <&kp EXCL>;
-    mods = <(MOD_LSFT|MOD_RSFT)>;
-)
-
-// tap: space | shift + tap: dot -> space -> sticky shift
-ZMK_BEHAVIOR(dot_spc, macro,
-    wait-ms = <5>;
-    tap-ms = <5>;
-    bindings = <&dot_morph_cancel &kp SPACE &sk LSFT>;
-)
-ZMK_BEHAVIOR(dot_morph_cancel, mod_morph,
-    bindings = <&kp DOT>, <&kp DOT>;
-    mods = <(MOD_LSFT|MOD_RSFT)>;
-)
-
-// COMBOS
+/* --------------------------------- combos --------------------------------- */
 // ╭─────────────────────┬─────────────────────╮
 // │ LT4 LT3 LT2 LT1 LT0 │ RT0 RT1 RT2 RT3 RT4 │
 // │ LM4 LM3 LM2 LM1 LM0 │ RM0 RM1 RM2 RM3 RM4 │
