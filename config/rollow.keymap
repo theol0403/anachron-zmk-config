@@ -37,12 +37,26 @@
 //   - Triple tap num lock/caps lock
 //   - Figure out a nice way to tap GUI
 //   - Add delete word
+//   - Caps word timeout
 // - Enumerated actions:
 //   - Consider better ways to activate BT
 //   - Try to put dynamic macros on num
 // - Workflow:
 //   - Add text expansion macros
 //   - Add programming bigrams
+//   - Add bad SFBs to vertical combos, and put brackets on shift mod-morph, or transparent layer to specify combo
+//   - Investigate symbol sfbs. 
+// - ZMK:
+//   - Make PR for partial release
+//   - Document different SK behavior
+//   - bug: sticky cancel releases mo layer
+
+// what if re-add CANCEL on mo tap, but only on layer. Motivation, cancel num lock/caps word. Want to tap sym to cancel. 
+// caps word invert on shift?
+// caps kebab, double space ends word
+
+// https://getreuer.info/posts/keyboards/select-word/index.html
+// maybe patch tap dance to trigger on every tap
 
 /* ------------------------ general config ----------------------- */
 // smart-layer config
@@ -88,8 +102,9 @@ ZMK_BEHAVIOR(dyn_macro_2, dynamic_macro, wait-ms = <10>;)
 /* --------------------------- sticky key behaviors -------------------------- */
 // global config
 &sk { // sticky-key
-    release-after-ms = <1000>;  // release after timeout
+    release-after-ms = <3000>;  // release after timeout
     quick-release;              // no double capitalization when rolling keys
+    lazy-activation;
 };
 &sl { // sticky-layer 
     release-after-ms = <500>;  // release after timeout
@@ -110,6 +125,20 @@ ZMK_BEHAVIOR(sk_mod, hold_tap,
     flavor = "balanced"; // balanced because we want to consider as tap when rolling
     tapping-term-ms = <STICKY_TAP_MS>; 
     bindings = <&kp>, <&sk>; 
+    hold-while-undecided; // requires (pr and release patch)
+)
+#define SK_LGUI &sk_mod_no_lazy LGUI LGUI 
+#define SK_LALT &sk_mod_no_lazy LALT LALT 
+ZMK_BEHAVIOR(sk_no_lazy, sticky_key, 
+    bindings = <&kp>;
+    release-after-ms = <3000>;  // release after timeout
+    quick-release;              // no double capitalization when rolling keys
+    ignore-modifiers;
+)
+ZMK_BEHAVIOR(sk_mod_no_lazy, hold_tap,
+    flavor = "balanced"; // balanced because we want to consider as tap when rolling
+    tapping-term-ms = <STICKY_TAP_MS>; 
+    bindings = <&kp>, <&sk_no_lazy>; 
     hold-while-undecided; // requires (pr and release patch)
 )
 
@@ -194,7 +223,7 @@ ZMK_BEHAVIOR(dot_morph_cancel, mod_morph,
         num_layer {
             bindings = <
             &swapper  &kp HASH  &kp DLLR   &kp PRCNT  &kp CARET   &kp PLUS  &kp N6   &kp N7  &kp N8  &kp ASTRK 
-            SK(LGUI)  SK(LALT)  SK(LCTL)   SK(LSFT)   SMRT_FUN    &kp EQUAL &kp N0   &kp N1  &kp N2  &kp N9 
+            SK_LGUI   SK_LALT   SK(LCTL)   SK(LSFT)   SMRT_FUN    &kp EQUAL &kp N0   &kp N1  &kp N2  &kp N9 
             S_UNDO    S_CUT     S_COPY     S_PASTE    S_REDO      &kp MINUS &kp N3   &kp N4  &kp N5  &lt BT FSLH 
                                 XXX        ___        &kp SPACE   &kp SPACE ___      XXX 
             >;
@@ -213,7 +242,7 @@ ZMK_BEHAVIOR(dot_morph_cancel, mod_morph,
         util_layer {
             bindings = <
             &bootloader REC_1     PLAY_1     PLAY_2    REC_2       &kp HOME     &kp PG_DN  &kp PG_UP   &kp END    &kp ESC 
-            SK(LGUI)    SK(LALT)  SK(LCTL)   SK(LSFT)  &kp PSCRN   &kp LEFT     &kp DOWN   &kp UP      &kp RIGHT  &kp ENTER 
+            SK_LGUI     SK_LALT   SK(LCTL)   SK(LSFT)  &kp PSCRN   &kp LEFT     &kp DOWN   &kp UP      &kp RIGHT  &kp ENTER 
             S_UNDO      S_CUT     S_COPY     S_PASTE   S_REDO      &key_repeat  &kp BSPC   &kp DEL     &kp TAB    &kp CAPS 
                                   XXX        ___       ___         ___          ___        XXX 
             >;
@@ -223,7 +252,7 @@ ZMK_BEHAVIOR(dot_morph_cancel, mod_morph,
         fun_layer {
             bindings = <
             ___       ___       ___        ___        ___    &kp F12  &kp F6      &kp F7  &kp F8  ___ 
-            SK(LGUI)  SK(LALT)  SK(LCTL)   SK(LSFT)   ___    &kp F11  &kp INSERT  &kp F1  &kp F2  &kp F9
+            SK_LGUI   SK_LALT   SK(LCTL)   SK(LSFT)   ___    &kp F11  &kp INSERT  &kp F1  &kp F2  &kp F9
             ___       ___       ___        ___        ___    &kp F10  &kp F3      &kp F4  &kp F5  ___
                                 ___        ___        ___    ___      ___         ___ 
             >;
@@ -251,9 +280,9 @@ ZMK_BEHAVIOR(dot_morph_cancel, mod_morph,
 //         ╰─────────────┴─────────────╯
 // use global-quick-tap-ms for combos (requires PR 1387)
 #undef COMBO_HOOK
-#define COMBO_HOOK global-quick-tap-ms = <100>;
+#define COMBO_HOOK global-quick-tap-ms = <50>;
 // combos on every layer
-#define GLOBAL_COMBO(name, keypos, bindings) ZMK_COMBO(name, bindings, keypos, ALL, 60)
+#define GLOBAL_COMBO(name, keypos, bindings) ZMK_COMBO(name, bindings, keypos, ALL, 50)
 GLOBAL_COMBO(esc, LT3 LT2, &kp ESC)
 GLOBAL_COMBO(tab, LT2 LT1, &kp TAB)
 GLOBAL_COMBO(rep, LB3 LB2, &key_repeat)
@@ -276,9 +305,7 @@ GLOBAL_COMBO(dot_spc, LH0 RH0, &dot_spc)
 
 // combos on the numpad
 #define NUM_COMBO(name, keypos, bindings) ZMK_COMBO(name, bindings, keypos, NUM, 40)
-NUM_COMBO(lpar_num, RT1 RT2, &kp LPAR)
-NUM_COMBO(rpar_num, RT2 RT3, &kp RPAR)
-NUM_COMBO(dot, RM1 RM2, &kp DOT)
+NUM_COMBO(dot, RM0 RM1, &kp DOT)
 
 // thumb combos are a feature that I designed to make it faster to type keys on the layers
 // it allows you to mash the thumb mo key and the key on the layer together at the same time
@@ -301,7 +328,7 @@ NUM_COMBO(dot, RM1 RM2, &kp DOT)
         combos { \
             compatible = "zmk,combos"; \
             combo_thumb_##thumb_param##_##thumb##_##keypos { \
-                timeout-ms = <20>; \
+                timeout-ms = <40>; \
                 layers = <combo_layers>; \
                 key-positions = <thumb keypos>; \
                 bindings = <&macro_thumb_##thumb_param##_##thumb##_##keypos>, <&partial_hold_position thumb thumb_behavior thumb_param>; \
@@ -356,8 +383,8 @@ NUM_THUMB_COMBO(LT3, &kp HASH)
 NUM_THUMB_COMBO(LT2, &kp DLLR)
 NUM_THUMB_COMBO(LT1, &kp PRCNT)
 NUM_THUMB_COMBO(LT0, &kp CARET)
-NUM_THUMB_COMBO(LM4, SK(LGUI))
-NUM_THUMB_COMBO(LM3, SK(LALT))
+NUM_THUMB_COMBO(LM4, SK_LGUI)
+NUM_THUMB_COMBO(LM3, SK_LALT)
 NUM_THUMB_COMBO(LM2, SK(LCTL) )
 NUM_THUMB_COMBO(LM1, SK(LSFT))
 NUM_THUMB_COMBO(LM0, SMRT_FUN)
