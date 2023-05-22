@@ -119,6 +119,14 @@ MAKE_HRM(hmlg, &kp, &kp, KEYS_R THUMBS, )  // left-hand HRMs
 MAKE_HRM(hmrg, &kp, &kp, KEYS_L THUMBS, )  // right-hand HRMs
 MAKE_HRM(hml, &kp, &kp, KEYS_R THUMBS, hold-while-undecided;)  // left-hand HRMs
 MAKE_HRM(hmr, &kp, &kp, KEYS_L THUMBS, hold-while-undecided;)  // right-hand HRMs
+#define H_GUI(key) &hmlg LGUI key 
+#define H_LALT(key) &hmlg LALT key 
+#define H_LCTL(key) &hml LCTL key
+#define H_LSFT(key) &hml LSFT key
+#define H_RSFT(key) &hmr RSFT key
+#define H_RCTL(key) &hmr RCTL key
+#define H_RALT(key) &hmrg RALT key
+#define H_GUI(key) &hmrg RGUI key
 
 /* --------------------------- sticky key behaviors -------------------------- */
 // global config
@@ -236,28 +244,28 @@ ZMK_BEHAVIOR(dot_morph_cancel, mod_morph,
         compatible = "zmk,keymap";
         default_layer {
             bindings = <
-            &kp B   &kp L   &kp D   &kp W    &kp Z       &kp APOS   &kp F    &kp O         &kp U       &kp J 
-            &hmlg LGUI N  &hmlg LALT R   &hml LCTL T   &hml LSFT S    &kp G       &kp Y      &hmr RSFT H    &hmr RCTL A         &hmrg RALT E       &hmrg RGUI I 
-            &kp Q   &kp X   &kp M   &kp C    &kp V       &kp K      &kp P    &comma_morph  &dot_morph  &qmark_morph
-                    &kp C_MUTE      SMRT_NUM SK_SHFT     &kp SPACE  SMRT_SYM XXX 
+            &kp B     &kp L     &kp D     &kp W     &kp Z      &kp APOS   &kp F     &kp O        &kp U      &kp J 
+            H_LGUI(N) H_LALT(R) H_LCTL(T) H_LSFT(S) &kp G      &kp Y      H_RSFT(H) H_RCTL(A)    H_RALT(E)  H_RGUI(I) 
+            &kp Q     &kp X     &kp M     &kp C     &kp V      &kp K      &kp P     &comma_morph &dot_morph &qmark_morph
+                                &kp C_MUTE SMRT_NUM SK_SHFT    &kp SPACE  SMRT_SYM  XXX 
             >;
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp UP DOWN>;
         };
         num_layer {
             bindings = <
-            &swapper  &kp HASH  &kp DLLR   &kp PRCNT  &kp CARET   &kp PLUS  &kp N6   &kp N7  &kp N8  &kp ASTRK 
-            SK_LGUI   SK_LALT   SK(LCTL)   SK(LSFT)   SMRT_FUN    &kp EQUAL &hmr RSFT N0   &hmr RCTL N1  &hmrg RALT N2  &hmrg RGUI N9 
-            S_UNDO    S_CUT     S_COPY     S_PASTE    S_REDO      &kp MINUS &kp N3   &kp N4  &kp N5  &lt BT FSLH 
-                                XXX        ___        &kp SPACE   &kp SPACE ___      XXX 
+            &swapper  &kp HASH  &kp DLLR   &kp PRCNT  &kp CARET   &kp PLUS  &kp N6     &kp N7     &kp N8     &kp ASTRK 
+            SK_LGUI   SK_LALT   SK(LCTL)   SK(LSFT)   SMRT_FUN    &kp EQUAL H_RSFT(N0) H_RCTL(N1) H_RALT(N2) H_RGUI(N9) 
+            S_UNDO    S_CUT     S_COPY     S_PASTE    S_REDO      &kp MINUS &kp N3     &kp N4     &kp N5     &lt BT FSLH 
+                                XXX        ___        &kp SPACE   &kp SPACE ___        XXX 
             >;
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp UP DOWN>;
         };
         sym_layer {
             bindings = <
-            &kp TILDE  &kp PIPE  &kp UNDER  &kp LBKT  &kp RBKT   &kp HOME    &kp PG_DN  &kp PG_UP  &kp END    &kp ESC 
-            &hmlg LGUI GRAVE  &hmlg LALT AMPS  &hml LCTL AT     &kp LPAR  &kp RPAR   &kp LEFT    &kp DOWN   &kp UP     &kp RIGHT  &kp ENTER 
-            &kp BSLH   &kp LT    &kp GT     &kp LBRC  &kp RBRC   &key_repeat &kp BSPC   &kp DEL    &kp TAB    &kp CAPS 
-                                 XXX        ___       ___        ___         ___        XXX 
+            &kp TILDE     &kp PIPE      &kp UNDER  &kp LBKT  &kp RBKT   &kp HOME    &kp PG_DN  &kp PG_UP  &kp END    &kp ESC 
+            H_LGUI(GRAVE) H_LALT(AMPS)  H_LCTL(AT) &kp LPAR  &kp RPAR   &kp LEFT    &kp DOWN   &kp UP     &kp RIGHT  &kp ENTER 
+            &kp BSLH      &kp LT        &kp GT     &kp LBRC  &kp RBRC   &key_repeat &kp BSPC   &kp DEL    &kp TAB    &kp CAPS 
+                                        XXX        ___       ___        ___         ___        XXX 
             >;
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp UP DOWN>;
         };
