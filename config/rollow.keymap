@@ -121,22 +121,22 @@ MAKE_HRM(hml, &kp, &kp, KEYS_R THUMBS, hold-while-undecided;)  // left-hand HRMs
 MAKE_HRM(hmr, &kp, &kp, KEYS_L THUMBS, hold-while-undecided;)  // right-hand HRMs
 // TODO: really examine uses
 // TODO: consider combos
-#define H_GUI(key) &hmlg LGUI key 
-#define H_LALT(key) &hmlg LALT key 
-#define H_LCTL(key) &kpkey
+#define H_LGUI(key) &kp key
+#define H_LALT(key) &kp key
+#define H_LCTL(key) &kp key
 #define H_LSFT(key) &kp key
 #define H_RSFT(key) &kp key
-#define H_RCTL(key) &hmr RCTL key
-#define H_RALT(key) &hmrg RALT key
-#define H_GUI(key) &hkpkey
-// #define H_GUI(key) &hmlg LGUI key 
+#define H_RCTL(key) &kp key
+#define H_RALT(key) &kp key
+#define H_RGUI(key) &kp key
+// #define H_LGUI(key) &hmlg LGUI key 
 // #define H_LALT(key) &hmlg LALT key 
 // #define H_LCTL(key) &hml LCTL key
 // #define H_LSFT(key) &hml LSFT key
 // #define H_RSFT(key) &hmr RSFT key
 // #define H_RCTL(key) &hmr RCTL key
 // #define H_RALT(key) &hmrg RALT key
-// #define H_GUI(key) &hmrg RGUI key
+// #define H_RGUI(key) &hmrg RGUI key
 
 /* --------------------------- sticky key behaviors -------------------------- */
 // global config
