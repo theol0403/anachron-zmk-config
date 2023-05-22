@@ -30,7 +30,6 @@
 //   - fix right encoder
 //   - Fix left OLED
 // - Conceptual:
-//   - Consider HRM
 //   - Consider mouse layer
 //   - Investigate media keys (brightness, display toggle, music)
 // - Minor:
@@ -84,7 +83,6 @@
 ZMK_CONDITIONAL_LAYER(NUM SYM, UTIL)
 
 /* ---------------------------- special behaviors --------------------------- */
-
 // Alt+Tab swapper, requires PR #1366
 ZMK_BEHAVIOR(swapper, tri_state,
     bindings = <&kt LALT>, <&kp TAB>, <&kt LALT>;
@@ -98,6 +96,29 @@ ZMK_BEHAVIOR(dyn_macro_1, dynamic_macro, wait-ms = <10>;)
 #define PLAY_2 &dyn_macro_2 PLAY
 #define REC_2 &dyn_macro_2 RECORD
 ZMK_BEHAVIOR(dyn_macro_2, dynamic_macro, wait-ms = <10>;)
+
+/* ------------------------------ home row mods ----------------------------- */
+#define KEYS_L LT0 LT1 LT2 LT3 LT4 LM0 LM1 LM2 LM3 LM4 LB0 LB1 LB2 LB3 LB4  // left hand
+#define KEYS_R RT0 RT1 RT2 RT3 RT4 RM0 RM1 RM2 RM3 RM4 RB0 RB1 RB2 RB3 RB4  // right hand
+#define THUMBS LH2 LH1 LH0 RH0 RH1 RH2                                      // thumbs
+
+// 280, 150
+#define MAKE_HRM(NAME, HOLD, TAP, TRIGGER_POS, EXTRA) \
+    ZMK_BEHAVIOR(NAME, hold_tap, \
+        flavor = "balanced"; \
+        tapping-term-ms = <500>; \
+        quick-tap-ms = <175>; \
+        global-quick-tap-ms = <150>; \
+        bindings = <HOLD>, <TAP>; \
+        hold-trigger-key-positions = <TRIGGER_POS>; \
+        hold-trigger-on-release; \
+        EXTRA \
+    )
+// TODO: potentially only space thumb
+MAKE_HRM(hmlg, &kp, &kp, KEYS_R THUMBS, )  // left-hand HRMs
+MAKE_HRM(hmrg, &kp, &kp, KEYS_L THUMBS, )  // right-hand HRMs
+MAKE_HRM(hml, &kp, &kp, KEYS_R THUMBS, hold-while-undecided;)  // left-hand HRMs
+MAKE_HRM(hmr, &kp, &kp, KEYS_L THUMBS, hold-while-undecided;)  // right-hand HRMs
 
 /* --------------------------- sticky key behaviors -------------------------- */
 // global config
@@ -216,7 +237,7 @@ ZMK_BEHAVIOR(dot_morph_cancel, mod_morph,
         default_layer {
             bindings = <
             &kp B   &kp L   &kp D   &kp W    &kp Z       &kp APOS   &kp F    &kp O         &kp U       &kp J 
-            &kp N   &kp R   &kp T   &kp S    &kp G       &kp Y      &kp H    &kp A         &kp E       &kp I 
+            &hmlg LGUI N  &hmlg LALT R   &hml LCTL T   &hml LSFT S    &kp G       &kp Y      &hmr RSFT H    &hmr RCTL A         &hmrg RALT E       &hmrg RGUI I 
             &kp Q   &kp X   &kp M   &kp C    &kp V       &kp K      &kp P    &comma_morph  &dot_morph  &qmark_morph
                     &kp C_MUTE      SMRT_NUM SK_SHFT     &kp SPACE  SMRT_SYM XXX 
             >;
@@ -225,7 +246,7 @@ ZMK_BEHAVIOR(dot_morph_cancel, mod_morph,
         num_layer {
             bindings = <
             &swapper  &kp HASH  &kp DLLR   &kp PRCNT  &kp CARET   &kp PLUS  &kp N6   &kp N7  &kp N8  &kp ASTRK 
-            SK_LGUI   SK_LALT   SK(LCTL)   SK(LSFT)   SMRT_FUN    &kp EQUAL &kp N0   &kp N1  &kp N2  &kp N9 
+            SK_LGUI   SK_LALT   SK(LCTL)   SK(LSFT)   SMRT_FUN    &kp EQUAL &hmr RSFT N0   &hmr RCTL N1  &hmrg RALT N2  &hmrg RGUI N9 
             S_UNDO    S_CUT     S_COPY     S_PASTE    S_REDO      &kp MINUS &kp N3   &kp N4  &kp N5  &lt BT FSLH 
                                 XXX        ___        &kp SPACE   &kp SPACE ___      XXX 
             >;
@@ -234,7 +255,7 @@ ZMK_BEHAVIOR(dot_morph_cancel, mod_morph,
         sym_layer {
             bindings = <
             &kp TILDE  &kp PIPE  &kp UNDER  &kp LBKT  &kp RBKT   &kp HOME    &kp PG_DN  &kp PG_UP  &kp END    &kp ESC 
-            &kp GRAVE  &kp AMPS  &kp AT     &kp LPAR  &kp RPAR   &kp LEFT    &kp DOWN   &kp UP     &kp RIGHT  &kp ENTER 
+            &hmlg LGUI GRAVE  &hmlg LALT AMPS  &hml LCTL AT     &kp LPAR  &kp RPAR   &kp LEFT    &kp DOWN   &kp UP     &kp RIGHT  &kp ENTER 
             &kp BSLH   &kp LT    &kp GT     &kp LBRC  &kp RBRC   &key_repeat &kp BSPC   &kp DEL    &kp TAB    &kp CAPS 
                                  XXX        ___       ___        ___         ___        XXX 
             >;
