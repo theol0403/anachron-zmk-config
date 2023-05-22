@@ -127,6 +127,7 @@ ZMK_BEHAVIOR(sk_mod, hold_tap,
     bindings = <&kp>, <&sk>; 
     hold-while-undecided; // requires (pr and release patch)
 )
+// for GUI/ALT, we don't want to trigger a tap, so we disable releasing + lazy
 #define SK_LGUI &sk_mod_no_lazy LGUI LGUI 
 #define SK_LALT &sk_mod_no_lazy LALT LALT 
 ZMK_BEHAVIOR(sk_no_lazy, sticky_key, 
@@ -140,6 +141,7 @@ ZMK_BEHAVIOR(sk_mod_no_lazy, hold_tap,
     tapping-term-ms = <STICKY_TAP_MS>; 
     bindings = <&kp>, <&sk_no_lazy>; 
     hold-while-undecided; // requires (pr and release patch)
+    hold-while-undecided-linger;
 )
 
 // tap: sticky-shift | hold: shift | shift + tap / double-tap: caps-word 
