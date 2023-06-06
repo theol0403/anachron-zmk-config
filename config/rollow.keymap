@@ -33,10 +33,8 @@
 //   - Consider mouse layer
 //   - Investigate media keys (brightness, display toggle, music)
 // - Minor:
-//   - Triple tap num lock/caps lock
 //   - Add delete word
 //   - Caps word timeout
-//   - Make shift + space = .A , not combo
 //   - Fix undo/redo
 // - Workflow:
 //   - Add text expansion macros
@@ -196,7 +194,7 @@ ZMK_BEHAVIOR(smrt_layer, hold_tap,
     bindings = <&mo>, <&sl>; 
 ) 
 
-// tap: sticky-num | hold: num | double-tap: num-word
+// tap: sticky-num | hold: num | double-tap: num-word | triple-tap: num-lock
 #define SMRT_NUM &smrt_num NUM NUM
 ZMK_BEHAVIOR(smrt_num, hold_tap,
     flavor = "hold-preferred"; 
@@ -205,7 +203,7 @@ ZMK_BEHAVIOR(smrt_num, hold_tap,
 ) 
 ZMK_BEHAVIOR(num_dance, tap_dance,
     tapping-term-ms = <300>; 
-    bindings = <&sl NUM>, <&num_word>; 
+    bindings = <&sl NUM>, <&num_word>, <&tog NUM>; // todo: to or tog?
 )
 
 /* ------------------------------- mod-morphs ------------------------------- */
@@ -226,6 +224,9 @@ ZMK_BEHAVIOR(qmark_morph, mod_morph,
 )
 
 // tap: space | shift + tap: dot -> space -> sticky shift
+ZMK_BEHAVIOR(spc_morph, mod_morph,
+    bindings = <&kp SPACE>, <&dot_spc>;
+    mods = <(MOD_LSFT|MOD_RSFT)>;
 ZMK_BEHAVIOR(dot_spc, macro,
     wait-ms = <5>;
     tap-ms = <5>;
@@ -248,7 +249,7 @@ ZMK_BEHAVIOR(dot_morph_cancel, mod_morph,
             &kp B     &kp L     &kp D     &kp W     &kp Z      &kp APOS   &kp F     &kp O        &kp U      &kp J 
             H_LGUI(N) H_LALT(R) H_LCTL(T) H_LSFT(S) &kp G      &kp Y      H_RSFT(H) H_RCTL(A)    H_RALT(E)  H_RGUI(I) 
             &kp Q     &kp X     &kp M     &kp C     &kp V      &kp K      &kp P     &comma_morph &dot_morph &qmark_morph
-                                &kp C_MUTE SMRT_NUM SK_SHFT    &dot_spc   SMRT_SYM  XXX 
+                                &kp C_MUTE SMRT_NUM SK_SHFT    &spc_morph   SMRT_SYM  XXX 
             >;
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp UP DOWN>;
         };
