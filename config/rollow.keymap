@@ -34,20 +34,16 @@
 //   - Investigate media keys (brightness, display toggle, music)
 // - Minor:
 //   - Triple tap num lock/caps lock
-//   - Figure out a nice way to tap GUI
 //   - Add delete word
 //   - Caps word timeout
-// - Enumerated actions:
-//   - Consider better ways to activate BT
-//   - Try to put dynamic macros on num
+//   - Make shift + space = .A , not combo
+//   - Fix undo/redo
 // - Workflow:
 //   - Add text expansion macros
 //   - Add programming bigrams
 //   - Add bad SFBs to vertical combos, and put brackets on shift mod-morph, or transparent layer to specify combo
 //   - Investigate symbol sfbs. 
 // - ZMK:
-//   - Make PR for partial release
-//   - Document different SK behavior
 //   - bug: sticky cancel releases mo layer
 
 // what if re-add CANCEL on mo tap, but only on layer. Motivation, cancel num lock/caps word. Want to tap sym to cancel. 
@@ -90,14 +86,10 @@ ZMK_BEHAVIOR(swapper, tri_state,
 )
 
 // dynamci macros, requires PR #1351
-#define PLAY_1 &dyn_macro_1 PLAY
-#define REC_1 &dyn_macro_1 RECORD
-ZMK_BEHAVIOR(dyn_macro_1, dynamic_macro, wait-ms = <10>;)
-#define PLAY_2 &dyn_macro_2 PLAY
-#define REC_2 &dyn_macro_2 RECORD
-ZMK_BEHAVIOR(dyn_macro_2, dynamic_macro, wait-ms = <10>;)
+ZMK_BEHAVIOR(dyn_macro, dynamic_macro, wait-ms = <10>;)
 
 /* ------------------------------ home row mods ----------------------------- */
+// not used for now, but the code is there
 #define KEYS_L LT0 LT1 LT2 LT3 LT4 LM0 LM1 LM2 LM3 LM4 LB0 LB1 LB2 LB3 LB4  // left hand
 #define KEYS_R RT0 RT1 RT2 RT3 RT4 RM0 RM1 RM2 RM3 RM4 RB0 RB1 RB2 RB3 RB4  // right hand
 #define THUMBS LH2 LH1 LH0 RH0 RH1 RH2                                      // thumbs
@@ -142,9 +134,16 @@ MAKE_HRM(hmr, &kp, &kp, KEYS_L THUMBS, hold-while-undecided;)  // right-hand HRM
 // global config
 &sk { // sticky-key
     release-after-ms = <3000>;  // release after timeout
-    quick-release;              // no double capitalization when rolling keys
-    lazy-activation;
+    quick-release;              // no double capitalization when rolling ke
+    ignore-modifiers;
+    lazy;
 };
+ZMK_BEHAVIOR(sk_no_lazy, sticky_key, // sticky-key without lazy
+    bindings = <&kp>;
+    release-after-ms = <3000>;  // release after timeout
+    quick-release;              // no double capitalization when rolling keys
+    ignore-modifiers;
+)
 &sl { // sticky-layer 
     release-after-ms = <500>;  // release after timeout
     // This is useful for enabling a layer and then pressing a bunch of sticky keys without leaving the layer. 
@@ -155,7 +154,7 @@ MAKE_HRM(hmr, &kp, &kp, KEYS_L THUMBS, hold-while-undecided;)  // right-hand HRM
 // all sticky keys are sticky when tapped, but momentary when held. 
 // this allows for rolling layer keys, and accessing modifiers on base, while not getting in the way.
 // this behavior is especially useful for use with a mouse because sticky odifiers don't linger
-// requires: (custom sk release timing)
+// requires: (pr)
 #define STICKY_TAP_MS 200
 
 // tap: sticky-mod | hold: mod
@@ -164,23 +163,15 @@ ZMK_BEHAVIOR(sk_mod, hold_tap,
     flavor = "balanced"; // balanced because we want to consider as tap when rolling
     tapping-term-ms = <STICKY_TAP_MS>; 
     bindings = <&kp>, <&sk>; 
-    hold-while-undecided; // requires (pr and release patch)
+    hold-while-undecided; // requires (pr)
 )
-// for GUI/ALT, we don't want to trigger a tap, so we disable releasing + lazy
-#define SK_LGUI &sk_mod_no_lazy LGUI LGUI 
-#define SK_LALT &sk_mod_no_lazy LALT LALT 
-ZMK_BEHAVIOR(sk_no_lazy, sticky_key, 
-    bindings = <&kp>;
-    release-after-ms = <3000>;  // release after timeout
-    quick-release;              // no double capitalization when rolling keys
-    ignore-modifiers;
-)
-ZMK_BEHAVIOR(sk_mod_no_lazy, hold_tap,
+// for GUI/ALT, we don't want to trigger a tap, so we disable hold while undecided
+#define SK_LGUI &sk_mod_gui LGUI LGUI 
+#define SK_LALT &sk_mod_gui LALT LALT 
+ZMK_BEHAVIOR(sk_mod_gui, hold_tap,
     flavor = "balanced"; // balanced because we want to consider as tap when rolling
     tapping-term-ms = <STICKY_TAP_MS>; 
-    bindings = <&kp>, <&sk_no_lazy>; 
-    hold-while-undecided; // requires (pr and release patch)
-    hold-while-undecided-linger;
+    bindings = <&kp>, <&sk>; 
 )
 
 // tap: sticky-shift | hold: shift | shift + tap / double-tap: caps-word 
@@ -193,7 +184,7 @@ ZMK_BEHAVIOR(sk_shft, hold_tap,
 ) 
 ZMK_BEHAVIOR(smrt_shft_morph, mod_morph,
     mods = <(MOD_LSFT)>; // shift + tap: caps word
-    bindings = <&sk LSFT>, <&caps_word>; 
+    bindings = <&sk_no_lazy LSFT>, <&caps_word>; 
 ) 
 
 // tap: sticky-layer | hold: layer
@@ -257,7 +248,7 @@ ZMK_BEHAVIOR(dot_morph_cancel, mod_morph,
             &kp B     &kp L     &kp D     &kp W     &kp Z      &kp APOS   &kp F     &kp O        &kp U      &kp J 
             H_LGUI(N) H_LALT(R) H_LCTL(T) H_LSFT(S) &kp G      &kp Y      H_RSFT(H) H_RCTL(A)    H_RALT(E)  H_RGUI(I) 
             &kp Q     &kp X     &kp M     &kp C     &kp V      &kp K      &kp P     &comma_morph &dot_morph &qmark_morph
-                                &kp C_MUTE SMRT_NUM SK_SHFT    &kp SPACE  SMRT_SYM  XXX 
+                                &kp C_MUTE SMRT_NUM SK_SHFT    &dot_spc   SMRT_SYM  XXX 
             >;
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp UP DOWN>;
         };
@@ -272,40 +263,30 @@ ZMK_BEHAVIOR(dot_morph_cancel, mod_morph,
         };
         sym_layer {
             bindings = <
-            &kp TILDE     &kp PIPE      &kp UNDER  &kp LBKT  &kp RBKT   &kp HOME    &kp PG_DN  &kp PG_UP  &kp END    &kp ESC 
-            H_LGUI(GRAVE) H_LALT(AMPS)  H_LCTL(AT) &kp LPAR  &kp RPAR   &kp LEFT    &kp DOWN   &kp UP     &kp RIGHT  &kp ENTER 
-            &kp BSLH      &kp LT        &kp GT     &kp LBRC  &kp RBRC   &key_repeat &kp BSPC   &kp DEL    &kp TAB    &kp CAPS 
-                                        XXX        ___       ___        ___         ___        XXX 
+            &kp TILDE     &kp UNDER   &kp LBKT  &kp RBKT  &kp PIPE      &kp HOME    &kp PG_DN  &kp PG_UP  &kp END    XXX
+            H_LGUI(GRAVE) H_LALT(AT)  &kp LPAR  &kp RPAR  H_LCTL(AMPS)  &kp LEFT    &kp DOWN   &kp UP     &kp RIGHT  &kp ENTER 
+            &kp BSLH      &kp LT      &kp LBRC  &kp RBRC  &kp GT        &key_repeat &kp BSPC   &kp DEL    &kp TAB    &kp ESC 
+                                      ___       ___       XXX         ___         ___        XXX 
             >;
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp UP DOWN>;
         };
  
         util_layer {
             bindings = <
-            &bootloader REC_1     PLAY_1     PLAY_2    REC_2       &kp HOME     &kp PG_DN  &kp PG_UP   &kp END    &kp ESC 
-            SK_LGUI     SK_LALT   SK(LCTL)   SK(LSFT)  &kp PSCRN   &kp LEFT     &kp DOWN   &kp UP      &kp RIGHT  &kp ENTER 
-            S_UNDO      S_CUT     S_COPY     S_PASTE   S_REDO      &key_repeat  &kp BSPC   &kp DEL     &kp TAB    &kp CAPS 
-                                  XXX        ___       ___         ___          ___        XXX 
+            &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_CLR  &dyn_macro RECORD  &kp HOME     &kp PG_DN  &kp PG_UP   &kp END    XXX
+            SK_LGUI      SK_LALT      SK(LCTL)     SK(LSFT)    &dyn_macro PLAY    &kp LEFT     &kp DOWN   &kp UP      &kp RIGHT  &kp ENTER 
+            S_UNDO       S_CUT        S_COPY       S_PASTE     S_REDO             &key_repeat  &kp BSPC   &kp DEL     &kp TAB    &kp ESC 
+                                      XXX          ___         ___                ___          ___        XXX 
             >;
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp UP DOWN>;
         };
 
         fun_layer {
             bindings = <
-            ___       ___       ___        ___        ___    &kp F12  &kp F6      &kp F7  &kp F8  ___ 
-            SK_LGUI   SK_LALT   SK(LCTL)   SK(LSFT)   ___    &kp F11  &kp INSERT  &kp F1  &kp F2  &kp F9
-            ___       ___       ___        ___        ___    &kp F10  &kp F3      &kp F4  &kp F5  ___
-                                ___        ___        ___    ___      ___         ___ 
-            >;
-            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp UP DOWN>;
-        };
-
-        bt_layer {
-            bindings = <
-            ___  ___  ___  ___  ___   &bt BT_NXT  ___           ___           ___           ___ 
-            ___  ___  ___  ___  ___   &bt BT_CLR  &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  ___ 
-            ___  ___  ___  ___  ___   &bt BT_PRV  &bt BT_SEL 3  &bt BT_SEL 4  &bt BT_SEL 5  ___
-                      ___  ___  ___   ___         ___           ___ 
+            ___       ___       ___        ___        ___    &kp F12  &kp F6     &kp F7  &kp F8  &kp INSERT
+            SK_LGUI   SK_LALT   SK(LCTL)   SK(LSFT)   ___    &kp F11  &kp PSCRN  &kp F1  &kp F2  &kp F9
+            ___       ___       ___        ___        ___    &kp F10  &kp F3     &kp F4  &kp F5  &kp CAPS
+                                ___        ___        ___    ___      ___        ___ 
             >;
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp UP DOWN>;
         };
@@ -323,30 +304,58 @@ ZMK_BEHAVIOR(dot_morph_cancel, mod_morph,
 #undef COMBO_HOOK
 #define COMBO_HOOK global-quick-tap-ms = <50>;
 // combos on every layer
-#define GLOBAL_COMBO(name, keypos, bindings) ZMK_COMBO(name, bindings, keypos, ALL, 50)
-GLOBAL_COMBO(esc, LT3 LT2, &kp ESC)
-GLOBAL_COMBO(tab, LT2 LT1, &kp TAB)
-GLOBAL_COMBO(rep, LB3 LB2, &key_repeat)
-GLOBAL_COMBO(ent, LB2 LB1, &kp ENTER)
-GLOBAL_COMBO(word, RT1 RT2, &caps_word)
-GLOBAL_COMBO(bksp, RB1 RB2, &kp BSPC)
-GLOBAL_COMBO(del, RB2 RB3, &kp DEL)
+#define LAYER_COMBO(name, keypos, bindings, layer) ZMK_COMBO(name, bindings, keypos, layer, 50)
+#define GLOBAL_COMBO(name, keypos, bindings) LAYER_COMBO(name, keypos, bindings, ALL)
+// GLOBAL_COMBO(bksp, RB1 RB2, &kp BSPC)
+// GLOBAL_COMBO(del, RB2 RB3, &kp DEL)
 GLOBAL_COMBO(numl, RB3 RB4, &num_word)
-
-GLOBAL_COMBO(lbkt, LT3 LM3, &kp LBKT)
-GLOBAL_COMBO(rbkt, RT3 RM3, &kp RBKT)
-GLOBAL_COMBO(lpar, LT2 LM2, &kp LPAR)
-GLOBAL_COMBO(rpar, RT2 RM2, &kp RPAR)
-GLOBAL_COMBO(lbrc, LT1 LM1, &kp LBRC)
-GLOBAL_COMBO(rbrc, RT1 RM1, &kp RBRC)
-GLOBAL_COMBO(lt, LT0 LM0, &kp LT)
-GLOBAL_COMBO(gt, RT0 RM0, &kp GT)
-
 GLOBAL_COMBO(dot_spc, LH0 RH0, &dot_spc)
 
 // combos on the numpad
 #define NUM_COMBO(name, keypos, bindings) ZMK_COMBO(name, bindings, keypos, NUM, 40)
 NUM_COMBO(dot, RM0 RM1, &kp DOT)
+NUM_COMBO(esc, LT3 LT2, &kp ESC)
+NUM_COMBO(tab, LT2 LT1, &kp TAB)
+NUM_COMBO(gui, LB3 LB2, &kp LGUI)
+NUM_COMBO(ent, LB2 LB1, &kp ENTER)
+NUM_COMBO(lpar, LT2 LM2, &kp LPAR)
+NUM_COMBO(rpar, LT1 LM1, &kp RPAR)
+
+// vertical sfb combos
+#define VERTICAL_COMBO(keypos, key1, key2) \
+    ZMK_BEHAVIOR(macro_vertical_combo_##key1##key2, macro, \
+        wait-ms = <20>; \
+        tap-ms = <20>; \
+        bindings \
+            = <&macro_tap &kp key1> \
+            , <&macro_press &kp key2> \
+            , <&macro_pause_for_release> \
+            , <&macro_release &kp key2> \
+            ; \
+    ) \
+    / { \
+        combos { \
+            compatible = "zmk,combos"; \
+            combo_vertical_combo_##key1##key2 { \
+                timeout-ms = <40>; \
+                layers = <BASE>; \
+                key-positions = <keypos>; \
+                bindings = <&macro_vertical_combo_##key1##key2>; \
+                slow-release;  \
+            }; \
+        }; \
+    };
+
+// disambiguate mashing SFBs
+VERTICAL_COMBO(LT3 LM3, R, L)
+VERTICAL_COMBO(LT1 LM1, W, S)
+VERTICAL_COMBO(LM1 LB1, S, C)
+VERTICAL_COMBO(LM1 LM0, G, S)
+VERTICAL_COMBO(RM1 RM0, H, Y)
+VERTICAL_COMBO(RM1 RB1, P, H)
+VERTICAL_COMBO(RT2 RM2, O, A)
+VERTICAL_COMBO(RM0 RT0, Y, APOS)
+VERTICAL_COMBO(RM4 RT0, I, APOS)
 
 // thumb combos are a feature that I designed to make it faster to type keys on the layers
 // it allows you to mash the thumb mo key and the key on the layer together at the same time
@@ -426,7 +435,7 @@ NUM_THUMB_COMBO(LT1, &kp PRCNT)
 NUM_THUMB_COMBO(LT0, &kp CARET)
 NUM_THUMB_COMBO(LM4, SK_LGUI)
 NUM_THUMB_COMBO(LM3, SK_LALT)
-NUM_THUMB_COMBO(LM2, SK(LCTL) )
+NUM_THUMB_COMBO(LM2, SK(LCTL))
 NUM_THUMB_COMBO(LM1, SK(LSFT))
 NUM_THUMB_COMBO(LM0, SMRT_FUN)
 NUM_THUMB_COMBO(LB4, S_UNDO)
