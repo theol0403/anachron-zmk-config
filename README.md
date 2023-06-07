@@ -16,7 +16,7 @@ intuitive, and ergonomic typing experience. It is similar to trilayer-based
 layouts such as callum or seniply, but provides a unique layer design and takes
 advantage of several ZMK features.
 
-(screenshot)
+![anachron layout](./after-cleanup.png)
 
 ## Features
 
