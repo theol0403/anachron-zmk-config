@@ -1,110 +1,122 @@
-# Anachron ZMK Keyboard Layout ⌨️⌛
+# Anachron ZMK Keyboard Layout ⌛⌨️
 
-**anachronism (adj.)** /əˈnæk·rəˌnɪz·əm/ : a person or a thing that is
-chronologically out of place; a chronological inconsistency
-
-_Designed by @mkkaufmann and @theol0403. Inspired by urob, callum, seniply,
-t-34, phnoty, keymapdb_.
-
-WIP (Jun 6, 2023)
+![anachron layout](./after-cleanup.png) _Designed by @mkkaufmann and @theol0403.
+Inspired by urob, callum, seniply, t-34, phnoty, keymapdb_. Alpha layout
+pictured is [graphite](https://github.com/rdavison/graphite-layout).
 
 ## Introduction
 
+> **anachronism (noun.)** /əˈnæk·rəˌnɪz·əm/ : a person or a thing that is
+> chronologically out of place; a chronological inconsistency.
+
 Anachron is a keyboard layout designed for 34-key keyboards, implemented with
-ZMK. It builds from the design of existing layouts and aims to provide a fast,
-intuitive, and ergonomic typing experience. It is similar to trilayer-based
-layouts such as callum or seniply, but provides a unique layer design and takes
-advantage of several ZMK features.
+ZMK. It aims to provide a fast, intuitive, and cohesive typing experience. It is
+similar to trilayer-based layouts such as
+[callum](https://github.com/qmk/qmk_firmware/blob/master/users/callum/readme.md)
+or [seniply](https://stevep99.github.io/seniply/), but provides a unique layer
+design and additional features taking advantage of ZMK. The implementation has
+been heavily inspired by the work of [urob](https://github.com/urob/zmk-config).
 
-![anachron layout](./after-cleanup.png)
+## Highlights
 
-## Features
+- timer-free layers, accelerated by **anachron combos**
+- intuitive and logical **consistency of the trilayer**
+- **one-handed mods**, shortcuts, and navigation, designed for mouse usage
+- fully-featured number pad with **easy math symbols**
+- sticky **shift on thumb**, capsword, and numword
 
-- intuitive and logical consistency of the trilayer
-- timer-free callum mods, accelerated by anachron combos
-- one handed shortcuts and navigation
-- one handed mods, designed for mouse usage
-- dedicated number pad
-- caps word and smart numbers that turn off when done
-- more intuitive shift-actions
-- clean keymap using helper macros from
-  [zmk-nodefree-config](https://github.com/urob/zmk-nodefree-config)
-- various misc features
+## Overview
 
-## Guiding Principles
+### Layer Design
 
-**Dependable timing matters**
+Left thumb + left hand will always produce modifiers and right thumb + right
+hand will always produce navigation. Layers are sticky by default, and are
+deactivated after a timeout.
 
-- no hesitation
-- no slowing down
-- small timing matters
-- play at full speed as if regular keyboard
-- this means no timers on the base layer or thumb keys
+Double-tapping num will enable
+[numword](https://github.com/urob/zmk-config#numword). Tripple-tapping num will
+toggle the num layer.
 
-**Muscle memory needs simple and consistent**
+Shift is sticky on the left thumb, and
+[capsword](https://github.com/urob/zmk-config#capsword) is enabled by
+double-tapping.
 
-- there should only be one way to do something, and it should be logical
-- no matter the layer, the same muscle memory should try to achieve the same
-  thing
-- for example there should be one motion to get modifiers, and one motion to get
-  arrows, and the same motion combined should get you modded arrows
+Mods on the left hand are sticky, but are
+[lazy](https://github.com/zmkfirmware/zmk/pull/1812), have a relatively fast
+timeout, are held while the key is being pressed
+([PR](https://github.com/zmkfirmware/zmk/pull/1811)), and are not sticky after
+being held (using a clever combination of hold-taps and additional PRs).
 
-**Sometimes, you don't have both hands on the keyboard**
-
-- when you use the mouse with your right hand, shortcuts should still be
-  accessible with the left
-- if you are using your computer while doing other things on the desk, you
-  should be able to access navigation and other layers with one hand
-
-**Fancy features must be intuitive**
-
-- Special features should feel like they belong, and should be easy to use, or
-  else they will not be used
-
-**Edge cases are important**
-
-- great care should be taken to ensure that every combination of timing and
-  keypresses results in natural behavior, regardless of implementation cost
-
-## Details
-
-**Layer Design**
-
-- left thumb gives you symbols on left hand, right thumb gives you nav on right
-  hand, regardless of layer
-- left thumb gives you numbers on right hand, right thumb gives you symbols on
-  left hand
-
-**Anachron Combos**
+### Anachron Combos
 
 - callum style layers, but with combos to speed them up
 - mash them together, release with intuitive behavior
 
-**Sticky Mods**
+### Extra Features
 
-- mods are sticky, but are lazy, have a fast timeout, are held while the key is
-  pressed, and are not sticky on hold
+Many of the features documented in urob's layout have been borrowed, including
+optional timeless homerow mods (not enabled by default), intuitive mod-morphs,
+swapper, repeat, space+shift, etc.
 
-**Caps Word**
+Additionally, vertical combos are used to allow you to mash SFBs together with
+one finger and have it resolve to the more common one.
 
-Double-tapping shift results in caps word.
+## Design Principles
 
-**Smart Numbers**
+In general, anachron is designed with the following principles in mind. These
+are defined from anecdotal experience and aim to ease frustrations with hold-tap
+based layouts.
 
-Double-tapping number row results in smart numbers.
+### Timers cause uncertainty, hesitation, and friction
 
-**Home Row Mods**
+There are many layouts, the most popular being
+[miryoku](https://github.com/manna-harbour/miryoku), that use hold-taps to
+access layers and home-row mods. However, after a year of typing on such
+layouts, I have found that the timers impeded my ability to feel confident in my
+typing, and introduced many minor usability issues. For example, you have to
+make each keypress be distinct to avoid triggering a home-row hold, keypresses
+are delayed while typing, key-repeat for home-row keys is impossible, shifting
+entire words is awkward without caps-word, and you always need both hands on the
+board at all times.
 
-Home row mods are against the design principles, but can be intuitively enabled
-by uncommenting lines
+Instead, anachron must feel like a regular keyboard when typing alphas, where
+keys mashed together with the slightest delay between them should be handled
+without interference regardless of release order. Also, there should be full
+key-repeat and no input lag. Layers should activate instantly and applying mods
+should feel as fast as typing letters, without any timing nuances or subliminal
+slowing down.
 
-**Space Shift**
+In theory, there should be no maximum speed at which you can complete any
+action, and a mistake involving timing or release order should not interfere
+with the intended action.
 
-**Numpad combos**
+### One action, one muscle memory
 
-- used for left hand nav
-- used for math
+There should only be one way to do something, and it should be logical. No
+matter the layer, the same muscle memory should achieve the same behavior; there
+should be no need to remember which layer you are on.
 
-**Verical SFB Combos**
+For example, there should be one motion to press modifiers, and one motion to
+press arrows, and combining those motions (on separate hands) should produce
+modded arrows — no need to complete the actions separately.
 
-- vertical combos are used to mash SFBs
+### One-handed usage is important
+
+Sometimes, you don't have both hands on the keyboard. Most actions should be
+accessible with one hand - when you use the mouse with your right hand,
+shortcuts should still be accessible with the left. Additionally, causal actions
+such as navigation/editing should be accessible with one hand.
+
+### Features must feel natural
+
+Stealing from [leap.nvim](https://github.com/ggandor/leap.nvim):
+
+- **80/20**: focus on features that are applicable in all contexts -
+  micro-improvements to the most frequent tasks accumulate more savings than
+  vanity features that turn out to be rarely needed in practice
+
+- **Sharpen the saw**: features should feel like a natural extension to the
+  core, conserving conceptual integrity, with an interplay as seamless and
+  intuitive as possible. Hiding features behind unintuitive entry points ensures
+  they will not be effectively used.
+- **Design is making decisions**: mitigate choice paralysis for the user
