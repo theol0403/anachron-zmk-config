@@ -1,8 +1,11 @@
 # Anachron ZMK Keyboard Layout ⌛⌨️
 
-![anachron layout](./after-cleanup.png) _Designed by @mkkaufmann and @theol0403.
-Inspired by urob, callum, seniply, t-34, phnoty, keymapdb_. Alpha layout
-pictured is [graphite](https://github.com/rdavison/graphite-layout).
+![anachron layout](./after-cleanup.png) Designed by @mkkaufmann and @theol0403.
+Inspired by [urob](https://github.com/urob/zmk-config),
+[callum](https://github.com/qmk/qmk_firmware/blob/master/users/callum/readme.md),
+[seniply](https://stevep99.github.io/seniply/), and various layouts on
+[keymapdb](https://keymapdb.com/). Alpha layout pictured is
+[graphite](https://github.com/rdavison/graphite-layout).
 
 ## Introduction
 
@@ -17,97 +20,94 @@ or [seniply](https://stevep99.github.io/seniply/), but provides a unique layer
 design and additional features taking advantage of ZMK. The implementation has
 been heavily inspired by the work of [urob](https://github.com/urob/zmk-config).
 
-## Highlights
+## ✨ Highlights
 
-- timer-free layers, accelerated by **anachron combos**
-- intuitive and logical **consistency of the trilayer**
-- **one-handed mods**, shortcuts, and navigation, designed for mouse usage
-- fully-featured number pad with **easy math symbols**
-- sticky **shift on thumb**, capsword, and numword
+- ⏩ timer-free layers, accelerated by **anachron combos**
+- ➕ intuitive and logical **consistency of the trilayer**
+- 🖱️ **one-handed mods**, shortcuts, and navigation, designed for mouse usage
+- 🧮 fully-featured number pad with **easy math symbols**
+- ⬆️ sticky **shift on thumb**, capsword, and numword
 
-## Overview
+## 🎉 Primary Features
 
-### Layer Design
+The left thumb and hand produce modifiers, while the right thumb and hand yield
+navigation. Layers are sticky and deactivate after a timeout. Double-tapping num
+enables [numword](https://github.com/urob/zmk-config#numword), and
+triple-tapping toggles the num layer.
 
-Left thumb + left hand will always produce modifiers and right thumb + right
-hand will always produce navigation. Layers are sticky by default, and are
-deactivated after a timeout.
+The left thumb's shift is sticky, and
+[capsword](https://github.com/urob/zmk-config#capsword) activates via
+double-tapping. Left-hand mods are sticky yet
+[lazy](https://github.com/zmkfirmware/zmk/pull/1812), have a quick timeout, stay
+active during key pressing, and lose stickiness after being held.
 
-Double-tapping num will enable
-[numword](https://github.com/urob/zmk-config#numword). Tripple-tapping num will
-toggle the num layer.
+Holding both thumbs activates the trilayer, which intuitively combines the mod
+and nav layers.
 
-Shift is sticky on the left thumb, and
-[capsword](https://github.com/urob/zmk-config#capsword) is enabled by
-double-tapping.
-
-Mods on the left hand are sticky, but are
-[lazy](https://github.com/zmkfirmware/zmk/pull/1812), have a relatively fast
-timeout, are held while the key is being pressed
-([PR](https://github.com/zmkfirmware/zmk/pull/1811)), and are not sticky after
-being held (using a clever combination of hold-taps and additional PRs).
-
-### Anachron Combos
-
-- callum style layers, but with combos to speed them up
-- mash them together, release with intuitive behavior
-
-### Extra Features
+Extra math symbols are available with combos on the num layer. Vertical combos
+are used to allow you to mash SFBs together with one finger and have it resolve
+to the more common one.
 
 Many of the features documented in urob's layout have been borrowed, including
 optional timeless homerow mods (not enabled by default), intuitive mod-morphs,
-swapper, repeat, space+shift, etc.
+swapper, repeat, space+shift, etc. Please study the layout to learn more.
 
-Additionally, vertical combos are used to allow you to mash SFBs together with
-one finger and have it resolve to the more common one.
+## ⌛ Anachron Combos
 
-## Design Principles
+With most callum-style layouts, there are two ways to access a key on a layer:
+hold a layer key and tap the key, or tap a sticky layer key and tap the key.
+However, both these methods require two separate actions that must happen
+sequentially. You may be tempted to mash the layer key together with the key,
+but this can lead to unintended behavior if the key is pressed slightly before
+the layer key.
 
-In general, anachron is designed with the following principles in mind. These
-are defined from anecdotal experience and aim to ease frustrations with hold-tap
-based layouts.
+Anachron combos are combos that allow you to press the key _slightly_ before the
+layer key and still register the correct behavior. This allows you to press any
+key on a layer with a single action. To solve edge cases, combo
+[partial-holds](https://github.com/zmkfirmware/zmk/pull/1809) must be used.
 
-### Timers cause uncertainty, hesitation, and friction
+This has been implemented using C macros in ZMK, and consists of almost a
+hundred combos. Please see the keymap for more details.
+
+## 📏 Design Principles
+
+Anachron has been designed with a few guiding principles to make typing less
+frustrating and more efficient:
+
+### ⏲️ Eliminate Uncertainty of Timers
 
 There are many layouts, the most popular being
 [miryoku](https://github.com/manna-harbour/miryoku), that use hold-taps to
 access layers and home-row mods. However, after a year of typing on such
 layouts, I have found that the timers impeded my ability to feel confident in my
-typing, and introduced many minor usability issues. For example, you have to
-make each keypress be distinct to avoid triggering a home-row hold, keypresses
-are delayed while typing, key-repeat for home-row keys is impossible, shifting
-entire words is awkward without caps-word, and you always need both hands on the
-board at all times.
+typing, and introduced issues. For example, you have to articulate your
+keystrokes to avoid triggering a home-row hold, keypresses are delayed,
+key-repeat is impeded, shifting entire words is awkward, and you need both hands
+on the board.
 
-Instead, anachron must feel like a regular keyboard when typing alphas, where
-keys mashed together with the slightest delay between them should be handled
-without interference regardless of release order. Also, there should be full
-key-repeat and no input lag. Layers should activate instantly and applying mods
-should feel as fast as typing letters, without any timing nuances or subliminal
-slowing down.
+Anachron aims for a regular keyboard feel with no interference between keys,
+immediate layer activation, fast mods application, zero input lag, and no timing
+constraints. There should be no speed limit or missteps related to timing or
+release order.
 
-In theory, there should be no maximum speed at which you can complete any
-action, and a mistake involving timing or release order should not interfere
-with the intended action.
+### 🖐️ One Muscle Memory for Each Action
 
-### One action, one muscle memory
+Each action should have only one method, and it should be logical. The same
+muscle memory should yield the same result when possible, eliminating the need
+to remember the active layer.
 
-There should only be one way to do something, and it should be logical. No
-matter the layer, the same muscle memory should achieve the same behavior; there
-should be no need to remember which layer you are on.
+For instance, pressing modifiers or arrows should each have a single motion, and
+combining them (on separate hands) should yield modded arrows without executing
+actions separately.
 
-For example, there should be one motion to press modifiers, and one motion to
-press arrows, and combining those motions (on separate hands) should produce
-modded arrows — no need to complete the actions separately.
+### 🖱️ Facilitate One-Handed Usage
 
-### One-handed usage is important
+Sometimes, you don't have both hands on the keyboard. Many actions should be
+achievable with one hand to accommodate instances when the other is occupied.
+This includes shortcuts accessible with the left hand while the right is on the
+mouse, and one-handed navigation/editing.
 
-Sometimes, you don't have both hands on the keyboard. Most actions should be
-accessible with one hand - when you use the mouse with your right hand,
-shortcuts should still be accessible with the left. Additionally, causal actions
-such as navigation/editing should be accessible with one hand.
-
-### Features must feel natural
+### 🛠️ Natural, Effective Features
 
 Stealing from [leap.nvim](https://github.com/ggandor/leap.nvim):
 
@@ -120,3 +120,6 @@ Stealing from [leap.nvim](https://github.com/ggandor/leap.nvim):
   intuitive as possible. Hiding features behind unintuitive entry points ensures
   they will not be effectively used.
 - **Design is making decisions**: mitigate choice paralysis for the user
+
+In short, features should feel like they belong and not introduce any cognitive
+load.
