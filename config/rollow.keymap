@@ -25,31 +25,6 @@
 #define S_PASTE &kp C_AC_PASTE
 #define S_REDO &kp C_AC_REDO
 
-// TODO:
-// - Harwdare:
-//   - fix right encoder
-//   - Fix left OLED
-// - Conceptual:
-//   - Consider mouse layer
-//   - Investigate media keys (brightness, display toggle, music)
-// - Minor:
-//   - Caps word timeout
-//   - Fix undo/redo
-//   - Hold symbol for double/triple tap?
-// - Workflow:
-//   - Add text expansion macros
-//   - Add programming bigrams
-//   - Investigate symbol sfbs. 
-//   - Caps word invert shift
-// - ZMK:
-//   - bug: sticky cancel releases mo layer
-
-// what if re-add CANCEL on mo tap, but only on layer. Motivation, cancel num lock/caps word. Want to tap sym to cancel. 
-// caps kebab, double space ends word
-
-// https://getreuer.info/posts/keyboards/select-word/index.html
-// maybe patch tap dance to trigger on every tap
-
 /* ------------------------ general config ----------------------- */
 // smart-layer config
 &caps_word {  
@@ -86,6 +61,7 @@ ZMK_BEHAVIOR(swapper, tri_state,
 ZMK_BEHAVIOR(dyn_macro, dynamic_macro, wait-ms = <10>;)
 
 /* ------------------------------ home row mods ----------------------------- */
+// currently unused, but the code is there
 #define KEYS_L LT0 LT1 LT2 LT3 LT4 LM0 LM1 LM2 LM3 LM4 LB0 LB1 LB2 LB3 LB4  // left hand
 #define KEYS_R RT0 RT1 RT2 RT3 RT4 RM0 RM1 RM2 RM3 RM4 RB0 RB1 RB2 RB3 RB4  // right hand
 #define THUMBS LH2 LH1 LH0 RH0 RH1 RH2                                      // thumbs
@@ -107,7 +83,7 @@ MAKE_HRM(hmlg, &kp, &kp, KEYS_R THUMBS, )  // left-hand HRMs
 MAKE_HRM(hmrg, &kp, &kp, KEYS_L THUMBS, )  // right-hand HRMs
 MAKE_HRM(hml, &kp, &kp, KEYS_R THUMBS, hold-while-undecided;)  // left-hand HRMs
 MAKE_HRM(hmr, &kp, &kp, KEYS_L THUMBS, hold-while-undecided;)  // right-hand HRMs
-// not used for now, but the code is there
+
 #define H_LGUI(key) &kp key
 #define H_LALT(key) &kp key
 #define H_LCTL(key) &kp key
@@ -149,7 +125,6 @@ ZMK_BEHAVIOR(sk_no_lazy, sticky_key, // sticky-key without lazy
 // all sticky keys are sticky when tapped, but momentary when held. 
 // this allows for rolling layer keys, and accessing modifiers on base, while not getting in the way.
 // this behavior is especially useful for use with a mouse because sticky odifiers don't linger
-// requires: (pr)
 #define STICKY_TAP_MS 200
 
 // tap: sticky-mod | hold: mod
@@ -158,7 +133,7 @@ ZMK_BEHAVIOR(sk_mod, hold_tap,
     flavor = "balanced"; // balanced because we want to consider as tap when rolling
     tapping-term-ms = <STICKY_TAP_MS>; 
     bindings = <&kp>, <&sk>; 
-    hold-while-undecided; // requires (pr)
+    hold-while-undecided; // requires pr
 )
 // for GUI/ALT, we don't want to trigger a tap, so we disable hold while undecided
 #define SK_LGUI &sk_mod_gui LGUI LGUI 
@@ -355,11 +330,9 @@ VERTICAL_COMBO(RT2 RM2, O, A)
 VERTICAL_COMBO(RM0 RT0, Y, APOS)
 VERTICAL_COMBO(RM4 RT0, I, APOS)
 
-// thumb combos are a feature that I designed to make it faster to type keys on the layers
-// it allows you to mash the thumb mo key and the key on the layer together at the same time
-// it relies on a patch I made to zmk which allows partial-holds when releasing the key while holding the thumb
-// thumb combos are implemented using a few hacks that solve all edge cases
-// the macro is used to enable the layer while the combo is held so that other keys on the layer can be used
+// ANACRON COMBOS
+// the macro is used to enable the layer while the combo is held so that other keys
+// on the layer can be used while the thumb is still held
 #define THUMB_COMBO_GENERAL(thumb_behavior, thumb_param, thumb, combo_layers, keypos, combo_bindings) \
     ZMK_BEHAVIOR(macro_thumb_##thumb_param##_##thumb##_##keypos, macro, \
         wait-ms = <0>; \
@@ -394,7 +367,7 @@ SYM_THUMB_COMBO(RT0, &kp HOME)
 SYM_THUMB_COMBO(RT1, &kp PG_DN)
 SYM_THUMB_COMBO(RT2, &kp PG_UP)
 SYM_THUMB_COMBO(RT3, &kp END)
-SYM_THUMB_COMBO(RT4, &kp ESC)
+# SYM_THUMB_COMBO(RT4, XXX)
 SYM_THUMB_COMBO(RM0, &kp LEFT)
 SYM_THUMB_COMBO(RM1, &kp DOWN)
 SYM_THUMB_COMBO(RM2, &kp UP)
@@ -404,7 +377,7 @@ SYM_THUMB_COMBO(RB0, &key_repeat)
 SYM_THUMB_COMBO(RB1, &kp BSPC)
 SYM_THUMB_COMBO(RB2, &kp DEL)
 SYM_THUMB_COMBO(RB3, &kp TAB)
-// SYM_THUMB_COMBO(RB4, &kp CAPS)
+SYM_THUMB_COMBO(RB4, &kp ESC)
 
 // right thumb combos with left hand SYM layer 
 #define SYM_THUMB_CROSS_COMBO(keypos, bindings) THUMB_LAYER_COMBO(SYM, RH1, BASE, keypos, bindings)
@@ -460,6 +433,7 @@ NUM_THUMB_CROSS_COMBO(RB2, &kp N4)
 NUM_THUMB_CROSS_COMBO(RB3, &kp N5)
 NUM_THUMB_CROSS_COMBO(RB4, &kp SLASH)
 
+// left thumb combos with both hands BASE layer
 #define SHFT_THUMB_COMBO(keypos, bindings) THUMB_COMBO_GENERAL(&kp, LSFT, LH0, BASE, keypos, bindings)
 SHFT_THUMB_COMBO(LT4, &kp B)
 SHFT_THUMB_COMBO(LT3, &kp L)
@@ -493,13 +467,27 @@ SHFT_THUMB_COMBO(RB2, &comma_morph)
 SHFT_THUMB_COMBO(RB3, &dot_morph)
 SHFT_THUMB_COMBO(RB4, &qmark_morph)
 
+// TODO:
+// - Hardware:
+//   - fix right encoder
+//   - Fix left OLED
+// - Conceptual:
+//   - Consider mouse layer
+//   - Investigate media keys (brightness, display toggle, music)
+// - Minor:
+//   - Caps word timeout
+//   - Fix undo/redo
+//   - Hold symbol for double/triple tap?
+// - Workflow:
+//   - Add text expansion macros
+//   - Add programming bigrams
+//   - Investigate symbol sfbs. 
+//   - Caps word invert shift
+// - ZMK:
+//   - bug: sticky cancel releases mo layer
 
-// combo_shift_left { 
-//     key-positions = <RH1 LH1 LM2 RM0>; 
-//     bindings = <&kp LC(LEFT)>; 
-//     timeout-ms = <100>; 
-//     partial-holds = <RH1 LH1 LM2>; 
-//     layers = <BASE>; 
-// };
+// what if re-add CANCEL on mo tap, but only on layer. Motivation, cancel num lock/caps word. Want to tap sym to cancel. 
+// caps kebab, double space ends word
 
-
+// https://getreuer.info/posts/keyboards/select-word/index.html
+// maybe patch tap dance to trigger on every tap

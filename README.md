@@ -1,13 +1,13 @@
-# Anachron ZMK Keyboard Layout ⌛⌨️
+# Anachron ZMK Config ⌛⌨️
 
-![anachron layout](./after-cleanup.png) Designed by @mkkaufmann and @theol0403.
-Inspired by [urob](https://github.com/urob/zmk-config),
+![anachron layout](./assets/after-cleanup.png) Designed by @mkkaufmann and
+@theol0403. Inspired by [urob](https://github.com/urob/zmk-config),
 [callum](https://github.com/qmk/qmk_firmware/blob/master/users/callum/readme.md),
 [seniply](https://stevep99.github.io/seniply/), and various layouts on
 [keymapdb](https://keymapdb.com/). Alpha layout pictured is
 [graphite](https://github.com/rdavison/graphite-layout).
 
-## Introduction
+## ⏰ Introduction
 
 > **anachronism (noun.)** /əˈnæk·rəˌnɪz·əm/ : a person or a thing that is
 > chronologically out of place; a chronological inconsistency.
@@ -33,7 +33,8 @@ been heavily inspired by the work of [urob](https://github.com/urob/zmk-config).
 The left thumb and hand produce modifiers, while the right thumb and hand yield
 navigation. Layers are sticky and deactivate after a timeout. Double-tapping num
 enables [numword](https://github.com/urob/zmk-config#numword), and
-triple-tapping toggles the num layer.
+triple-tapping toggles the num layer. A numword combo on the right hand is
+available for one-handed number entry.
 
 The left thumb's shift is sticky, and
 [capsword](https://github.com/urob/zmk-config#capsword) activates via
@@ -123,3 +124,18 @@ Stealing from [leap.nvim](https://github.com/ggandor/leap.nvim):
 
 In short, features should feel like they belong and not introduce any cognitive
 load.
+
+## 💻 Building
+
+Currently, anacron requires ~8 unmerged PRs to ZMK. I am currently using my
+[local](https://github.com/theol0403/zmk/tree/local) zmk fork to locally build
+the layout, which is based on
+[urob's](https://github.com/urob/zmk/tree/main-3.2). Hopefully I will have time
+to document the build process to be useable in CI (urob has already done the
+work for this).
+
+## ✅ Todo
+
+- add media keys
+- document unique sticky mod configuration
+- add programming bigram combos
