@@ -114,6 +114,10 @@ mouse, and one-handed navigation/editing.
 For example, numword is accessible with a combo on the right hand, and common
 nav combos are available on the left hand num layer.
 
+Additionally, sticky mods are designed to be used with a mouse: they are active
+during holding, are only sticky on tap, are lazy on release, and have a quick
+timeout.
+
 ### 🛠️ Natural, Effective Features
 
 Stealing from [leap.nvim](https://github.com/ggandor/leap.nvim):
