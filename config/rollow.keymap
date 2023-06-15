@@ -293,6 +293,7 @@ NUM_COMBO(gui, LB3 LB2, &kp LGUI)
 NUM_COMBO(ent, LB2 LB1, &kp ENTER)
 NUM_COMBO(lpar, LT2 LM2, &kp LPAR)
 NUM_COMBO(rpar, LT1 LM1, &kp RPAR)
+NUM_COMBO(x, LM3 LB3, &kp X)
 
 // vertical sfb combos
 #define VERTICAL_COMBO(keypos, key1, key2) \

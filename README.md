@@ -136,7 +136,7 @@ load.
 Currently, anacron requires ~8 unmerged PRs to ZMK. I am currently using my
 [local](https://github.com/theol0403/zmk/tree/local) zmk fork to locally build
 the layout, which is based on [urob's](https://github.com/urob/zmk/tree/main).
-Follow the instructions in my fork to enable in your config.
+Follow the instructions in my fork to enable building with CI.
 
 ## ✅ Todo
 
