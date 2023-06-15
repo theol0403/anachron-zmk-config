@@ -21,7 +21,7 @@ been heavily inspired by the work of [urob](https://github.com/urob/zmk-config).
 
 The alpha layout pictured is
 [graphite](https://github.com/rdavison/graphite-layout), but anachron can be
-used with any alpha layyout.
+used with any alpha layout.
 
 ## ✨ Highlights
 
@@ -49,8 +49,8 @@ Holding both thumbs activates the trilayer, which intuitively combines the mod
 and nav layers.
 
 Extra math symbols are available with combos on the num layer. Vertical combos
-are used to allow you to mash SFBs together with one finger and have it resolve
-to the more common one.
+are used to allow you to mash Same Finger Bigrams (SFBs) together with one
+finger and have it resolve to the more common one.
 
 Many of the features documented in urob's layout have been borrowed, including
 optional timeless homerow mods (not enabled by default), intuitive mod-morphs,
@@ -67,10 +67,10 @@ the layer key.
 
 Anachron combos are combos that allow you to press the key _slightly_ before the
 layer key and still register the correct behavior. This allows you to press any
-key on a layer with a single action. To solve edge cases, combo
+key on a layer with a single chord. To solve edge cases, combo
 [partial-holds](https://github.com/zmkfirmware/zmk/pull/1809) must be used.
 
-This has been implemented using C macros in ZMK, and consists of almost a
+This has been implemented using C helper macros in ZMK, and consists of almost a
 hundred combos. Please see the keymap for more details.
 
 ## 📏 Design Principles
@@ -96,9 +96,9 @@ release order.
 
 ### 🖐️ One Muscle Memory for Each Action
 
-Each action should have only one method, and it should be logical. The same
-muscle memory should yield the same result when possible, eliminating the need
-to remember the active layer.
+Each action should generally have only one method, and it should be logical. The
+same muscle memory should yield the same result when possible, eliminating the
+need to remember the active layer.
 
 For instance, pressing modifiers or arrows should each have a single motion, and
 combining them (on separate hands) should yield modded arrows without executing
@@ -110,6 +110,9 @@ Sometimes, you don't have both hands on the keyboard. Many actions should be
 achievable with one hand to accommodate instances when the other is occupied.
 This includes shortcuts accessible with the left hand while the right is on the
 mouse, and one-handed navigation/editing.
+
+For example, numword is accessible with a combo on the right hand, and common
+nav combos are available on the left hand num layer.
 
 ### 🛠️ Natural, Effective Features
 
@@ -132,10 +135,8 @@ load.
 
 Currently, anacron requires ~8 unmerged PRs to ZMK. I am currently using my
 [local](https://github.com/theol0403/zmk/tree/local) zmk fork to locally build
-the layout, which is based on
-[urob's](https://github.com/urob/zmk/tree/main-3.2). Hopefully I will have time
-to document the build process to be useable in CI (urob has already done the
-work for this).
+the layout, which is based on [urob's](https://github.com/urob/zmk/tree/main).
+Follow the instructions in my fork to enable in your config.
 
 ## ✅ Todo
 
