@@ -4,8 +4,7 @@
 @theol0403. Inspired by [urob](https://github.com/urob/zmk-config),
 [callum](https://github.com/qmk/qmk_firmware/blob/master/users/callum/readme.md),
 [seniply](https://stevep99.github.io/seniply/), and various layouts on
-[keymapdb](https://keymapdb.com/). Alpha layout pictured is
-[graphite](https://github.com/rdavison/graphite-layout).
+[keymapdb](https://keymapdb.com/).
 
 ## ⏰ Introduction
 
@@ -19,6 +18,10 @@ similar to trilayer-based layouts such as
 or [seniply](https://stevep99.github.io/seniply/), but provides a unique layer
 design and additional features taking advantage of ZMK. The implementation has
 been heavily inspired by the work of [urob](https://github.com/urob/zmk-config).
+
+The alpha layout pictured is
+[graphite](https://github.com/rdavison/graphite-layout), but anachron can be
+used with any alpha layyout.
 
 ## ✨ Highlights
 
