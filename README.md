@@ -49,8 +49,8 @@ Holding both thumbs activates the trilayer, which intuitively combines the mod
 and nav layers.
 
 Extra math symbols are available with combos on the num layer. Vertical combos
-are used to allow you to mash Same Finger Bigrams (SFBs) together with one
-finger and have it resolve to the more common one.
+on the base layer are used to allow you to mash Same Finger Bigrams (SFBs)
+together with one finger and have it resolve to the more common one.
 
 Many of the features documented in urob's layout have been borrowed, including
 optional timeless homerow mods (not enabled by default), intuitive mod-morphs,
