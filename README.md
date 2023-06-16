@@ -102,7 +102,9 @@ need to remember the active layer.
 
 For instance, pressing modifiers or arrows should each have a single motion, and
 combining them (on separate hands) should yield modded arrows without executing
-actions separately.
+actions separately. Another example is when navigating with sym/nav, like selecting
+a word with shift+arrows, you can just apply the "copy" muscle memory to copy without 
+needing to remember to first let go of sym/nav.
 
 ### 🖱️ Facilitate One-Handed Usage
 
@@ -137,7 +139,7 @@ load.
 
 ## 💻 Building
 
-Currently, anacron requires ~8 unmerged PRs to ZMK. I am currently using my
+Currently, anachron requires ~8 unmerged PRs to ZMK. I am currently using my
 [local](https://github.com/theol0403/zmk/tree/local) zmk fork to locally build
 the layout, which is based on [urob's](https://github.com/urob/zmk/tree/main).
 Follow the instructions in my fork to enable building with CI.
