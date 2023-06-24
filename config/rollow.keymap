@@ -15,9 +15,8 @@
 #define BASE 0
 #define NUM 1
 #define SYM 2
-#define UTIL 3
-#define FUN 4
-#define BT 5
+#define MERGE 3
+#define MEDIA 4
 
 #define S_UNDO &kp C_AC_UNDO
 #define S_CUT &kp C_AC_CUT
@@ -48,7 +47,7 @@
     tapping-term-ms = <200>;
 };
 
-ZMK_CONDITIONAL_LAYER(NUM SYM, UTIL)
+ZMK_CONDITIONAL_LAYER(NUM SYM, MERGE)
 
 /* ---------------------------- special behaviors --------------------------- */
 // Alt+Tab swapper, requires PR #1366
@@ -158,7 +157,7 @@ ZMK_BEHAVIOR(smrt_shft_morph, mod_morph,
 
 // tap: sticky-layer | hold: layer
 #define SMRT_SYM &smrt_layer SYM SYM
-#define SMRT_FUN &smrt_layer FUN FUN
+#define SMRT_MED &smrt_layer MEDIA MEDIA
 ZMK_BEHAVIOR(smrt_layer, hold_tap,
     flavor = "hold-preferred"; // in most cases we want to avoid taps
     tapping-term-ms = <STICKY_TAP_MS>; 
@@ -209,6 +208,29 @@ ZMK_BEHAVIOR(dot_morph_cancel, mod_morph,
     mods = <(MOD_LSFT|MOD_RSFT)>;
 )
 
+// shift + number: fn
+ZMK_BEHAVIOR(fn_0, mod_morph, bindings = <&kp N0>, <&kp PSCRN>; mods = <(MOD_LSFT|MOD_RSFT)>;)
+ZMK_BEHAVIOR(fn_1, mod_morph, bindings = <&kp N1>, <&kp F1>; mods = <(MOD_LSFT|MOD_RSFT)>;)
+ZMK_BEHAVIOR(fn_2, mod_morph, bindings = <&kp N2>, <&kp F2>; mods = <(MOD_LSFT|MOD_RSFT)>;)
+ZMK_BEHAVIOR(fn_3, mod_morph, bindings = <&kp N3>, <&kp F3>; mods = <(MOD_LSFT|MOD_RSFT)>;)
+ZMK_BEHAVIOR(fn_4, mod_morph, bindings = <&kp N4>, <&kp F4>; mods = <(MOD_LSFT|MOD_RSFT)>;)
+ZMK_BEHAVIOR(fn_5, mod_morph, bindings = <&kp N5>, <&kp F5>; mods = <(MOD_LSFT|MOD_RSFT)>;)
+ZMK_BEHAVIOR(fn_6, mod_morph, bindings = <&kp N6>, <&kp F6>; mods = <(MOD_LSFT|MOD_RSFT)>;)
+ZMK_BEHAVIOR(fn_7, mod_morph, bindings = <&kp N7>, <&kp F7>; mods = <(MOD_LSFT|MOD_RSFT)>;)
+ZMK_BEHAVIOR(fn_8, mod_morph, bindings = <&kp N8>, <&kp F8>; mods = <(MOD_LSFT|MOD_RSFT)>;)
+ZMK_BEHAVIOR(fn_9, mod_morph, bindings = <&kp N9>, <&kp F9>; mods = <(MOD_LSFT|MOD_RSFT)>;)
+ZMK_BEHAVIOR(fn_mins, mod_morph, bindings = <&kp MINUS>, <&kp F10>; mods = <(MOD_LSFT|MOD_RSFT)>;)
+ZMK_BEHAVIOR(fn_eql, mod_morph, bindings = <&kp EQUAL>, <&kp F11>; mods = <(MOD_LSFT|MOD_RSFT)>;)
+ZMK_BEHAVIOR(fn_plus, mod_morph, bindings = <&kp PLUS>, <&kp F12>; mods = <(MOD_LSFT|MOD_RSFT)>;)
+ZMK_BEHAVIOR(fn_ast, mod_morph, bindings = <&kp ASTRK>, <&kp INSERT>; mods = <(MOD_LSFT|MOD_RSFT)>;)
+ZMK_BEHAVIOR(fn_fslh, mod_morph, bindings = <&kp FSLH>, <&kp CAPS>; mods = <(MOD_LSFT|MOD_RSFT)>;)
+
+// tap: play | shift + tap: record
+ZMK_BEHAVIOR(dyn_macro_morph, mod_morph,
+    bindings = <&dyn_macro PLAY>, <&dyn_macro RECORD>;
+    mods = <(MOD_LSFT|MOD_RSFT)>;
+)
+
 / {
     chosen {
         zmk,matrix_transform = &five_column_transform;
@@ -227,39 +249,39 @@ ZMK_BEHAVIOR(dot_morph_cancel, mod_morph,
         };
         num_layer {
             bindings = <
-            &swapper  &kp HASH  &kp DLLR   &kp PRCNT  &kp CARET   &kp PLUS  &kp N6     &kp N7     &kp N8     &kp ASTRK 
-            SK_LGUI   SK_LALT   SK(LCTL)   SK(LSFT)   SMRT_FUN    &kp EQUAL H_RSFT(N0) H_RCTL(N1) H_RALT(N2) H_RGUI(N9) 
-            S_UNDO    S_CUT     S_COPY     S_PASTE    S_REDO      &kp MINUS &kp N3     &kp N4     &kp N5     &lt BT FSLH 
-                                XXX        ___        &kp SPACE   &kp SPACE ___        XXX 
+            &swapper  &kp HASH  &kp DLLR   &kp PRCNT  &kp CARET  &fn_plus   &fn_6  &fn_7  &fn_8  &fn_ast 
+            SK_LGUI   SK_LALT   SK(LCTL)   SK(LSFT)   &kp DOT    &fn_eql    &fn_0  &fn_1  &fn_2  &fn_9 
+            S_UNDO    S_CUT     S_COPY     S_PASTE    S_REDO     &fn_mins   &fn_3  &fn_4  &fn_5  &fn_fslh
+                                XXX        ___        ___        &kp SPACE  ___    XXX 
             >;
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp UP DOWN>;
         };
         sym_layer {
             bindings = <
-            &kp TILDE     &kp UNDER   &kp LBKT  &kp RBKT  &kp PIPE      &kp HOME    &kp PG_DN  &kp PG_UP  &kp END    XXX
-            H_LGUI(GRAVE) H_LALT(AT)  &kp LPAR  &kp RPAR  H_LCTL(AMPS)  &kp LEFT    &kp DOWN   &kp UP     &kp RIGHT  &kp ENTER 
-            &kp BSLH      &kp LT      &kp LBRC  &kp RBRC  &kp GT        &key_repeat &kp BSPC   &kp DEL    &kp TAB    &kp ESC 
+            &kp TILDE     &kp UNDER   &kp LBKT  &kp RBKT  &kp PIPE      &kp HOME  &kp PG_DN  &kp PG_UP  &kp END    &dyn_macro_morph
+            H_LGUI(GRAVE) H_LALT(AT)  &kp LPAR  &kp RPAR  H_LCTL(AMPS)  &kp LEFT  &kp DOWN   &kp UP     &kp RIGHT  &kp ENTER 
+            &kp BSLH      &kp LT      &kp LBRC  &kp RBRC  &kp GT        &kp ESC   &kp BSPC   &kp DEL    &kp TAB    &key_repeat 
                                       ___       ___       XXX         ___         ___        XXX 
             >;
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp UP DOWN>;
         };
  
-        util_layer {
+        merge_layer {
             bindings = <
-            &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_CLR  &dyn_macro RECORD  &kp HOME     &kp PG_DN  &kp PG_UP   &kp END    XXX
-            SK_LGUI      SK_LALT      SK(LCTL)     SK(LSFT)    &dyn_macro PLAY    &kp LEFT     &kp DOWN   &kp UP      &kp RIGHT  &kp ENTER 
-            S_UNDO       S_CUT        S_COPY       S_PASTE     S_REDO             &key_repeat  &kp BSPC   &kp DEL     &kp TAB    &kp ESC 
-                                      XXX          ___         ___                ___          ___        XXX 
+            &swapper XXX          XXX          XXX         XXX        &kp HOME  &kp PG_DN  &kp PG_UP  &kp END    &dyn_macro_morph
+            SK_LGUI  SK_LALT      SK(LCTL)     SK(LSFT)    SMRT_MED   &kp LEFT  &kp DOWN   &kp UP     &kp RIGHT  &kp ENTER 
+            S_UNDO   S_CUT        S_COPY       S_PASTE     S_REDO     &kp ESC   &kp BSPC   &kp DEL    &kp TAB    &key_repeat
+                                  XXX          ___         ___        ___       ___        XXX 
             >;
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp UP DOWN>;
         };
 
-        fun_layer {
+        media_layer {
             bindings = <
-            ___       ___       ___        ___        ___    &kp F12  &kp F6     &kp F7  &kp F8  &kp INSERT
-            SK_LGUI   SK_LALT   SK(LCTL)   SK(LSFT)   ___    &kp F11  &kp PSCRN  &kp F1  &kp F2  &kp F9
-            ___       ___       ___        ___        ___    &kp F10  &kp F3     &kp F4  &kp F5  &kp CAPS
-                                ___        ___        ___    ___      ___        ___ 
+            ___       ___       ___        ___        ___    &kp C_PREV      &kp C_VOL_DN  &kp C_VOL_UP  &kp C_NEXT     &kp C_PP 
+            SK_LGUI   SK_LALT   SK(LCTL)   SK(LSFT)   ___    &bt BT_SEL 0    &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_CLR     &kp C_MENU
+            ___       ___       ___        ___        ___    &kp C_BKLT_TOG  &kp C_BRI_DN  &kp C_BRI_UP  &kp C_BRI_MAX  &kp CAPS
+                                ___        ___        ___    ___             ___           ___ 
             >;
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp UP DOWN>;
         };
@@ -285,7 +307,7 @@ GLOBAL_COMBO(numl, RB3 RB4, &num_word)
 GLOBAL_COMBO(dot_spc, LH0 RH0, &dot_spc)
 
 // combos on the numpad
-#define NUM_COMBO(name, keypos, bindings) ZMK_COMBO(name, bindings, keypos, NUM, 40)
+#define NUM_COMBO(name, keypos, bindings) ZMK_COMBO(name, bindings, keypos, NUM, 50)
 NUM_COMBO(dot, RM0 RM1, &kp DOT)
 NUM_COMBO(esc, LT3 LT2, &kp ESC)
 NUM_COMBO(tab, LT2 LT1, &kp TAB)
@@ -409,7 +431,7 @@ NUM_THUMB_COMBO(LM4, SK_LGUI)
 NUM_THUMB_COMBO(LM3, SK_LALT)
 NUM_THUMB_COMBO(LM2, SK(LCTL))
 NUM_THUMB_COMBO(LM1, SK(LSFT))
-NUM_THUMB_COMBO(LM0, SMRT_FUN)
+NUM_THUMB_COMBO(LM0, SMRT_MED)
 NUM_THUMB_COMBO(LB4, S_UNDO)
 NUM_THUMB_COMBO(LB3, S_CUT)
 NUM_THUMB_COMBO(LB2, S_COPY)

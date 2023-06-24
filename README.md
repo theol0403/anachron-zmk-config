@@ -1,7 +1,7 @@
 # Anachron ZMK Config ⌛⌨️
 
-![anachron layout](./assets/after-cleanup.png) Designed by @mkkaufmann and
-@theol0403. Inspired by [urob](https://github.com/urob/zmk-config),
+![anachron layout](./assets/v1.1.0.png) Designed by @mkkaufmann and @theol0403.
+Inspired by [urob](https://github.com/urob/zmk-config),
 [callum](https://github.com/qmk/qmk_firmware/blob/master/users/callum/readme.md),
 [seniply](https://stevep99.github.io/seniply/), and various layouts on
 [keymapdb](https://keymapdb.com/).
@@ -144,8 +144,19 @@ Currently, anachron requires ~8 unmerged PRs to ZMK. I am currently using my
 the layout, which is based on [urob's](https://github.com/urob/zmk/tree/main).
 Follow the instructions in my fork to enable building with CI.
 
+## 📜 Changelog
+
+- v1.0.0
+  - Initial release
+- v1.1.0
+  - Move play/rec to right pinky corner, mod with shift
+  - Remove fn key and use shift + num for Fn
+  - Move dot to left hand numpad
+  - Add media keys on util layer, including bt, vol and display
+  - Swap rep/esc
+  - Rename util to merge
+
 ## ✅ Todo
 
-- add media keys
-- document unique sticky mod configuration
+- document sticky mod options (hold while undecided + not lazy, no hold + lazy)
 - add programming bigram combos
