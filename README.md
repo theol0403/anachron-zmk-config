@@ -1,6 +1,6 @@
 # Anachron ZMK Config ⌛⌨️
 
-![anachron layout](./assets/v1.1.0.png) Designed by @mkkaufmann and @theol0403.
+![anachron layout](./assets/v1.2.0.png) Designed by @mkkaufmann and @theol0403.
 Inspired by [urob](https://github.com/urob/zmk-config),
 [callum](https://github.com/qmk/qmk_firmware/blob/master/users/callum/readme.md),
 [seniply](https://stevep99.github.io/seniply/), and various layouts on
@@ -155,8 +155,18 @@ Follow the instructions in my fork to enable building with CI.
   - Add media keys on util layer, including bt, vol and display
   - Swap rep/esc
   - Rename util to merge
+- v1.2.0
+  - Arrow bigrams => -> were tedious. This is solved by moving - and = to a spot
+    _on num_ easily accessible from sym. This required a major rework of
+    symbols.
+  - The following symbols are arbitrarily placed and prone to change: %$\*/#^+
+  - In short, the num symbols have changed, but are subject to change based on
+    usage and the following considerations:
+    - freq vs ease of access
+    - combination with sym layer
+    - SFBs
+    - right-handed numpad usage
 
 ## ✅ Todo
 
 - document sticky mod options (hold while undecided + not lazy, no hold + lazy)
-- add programming bigram combos

@@ -219,9 +219,9 @@ ZMK_BEHAVIOR(fn_6, mod_morph, bindings = <&kp N6>, <&kp F6>; mods = <(MOD_LSFT|M
 ZMK_BEHAVIOR(fn_7, mod_morph, bindings = <&kp N7>, <&kp F7>; mods = <(MOD_LSFT|MOD_RSFT)>;)
 ZMK_BEHAVIOR(fn_8, mod_morph, bindings = <&kp N8>, <&kp F8>; mods = <(MOD_LSFT|MOD_RSFT)>;)
 ZMK_BEHAVIOR(fn_9, mod_morph, bindings = <&kp N9>, <&kp F9>; mods = <(MOD_LSFT|MOD_RSFT)>;)
-ZMK_BEHAVIOR(fn_mins, mod_morph, bindings = <&kp MINUS>, <&kp F10>; mods = <(MOD_LSFT|MOD_RSFT)>;)
-ZMK_BEHAVIOR(fn_eql, mod_morph, bindings = <&kp EQUAL>, <&kp F11>; mods = <(MOD_LSFT|MOD_RSFT)>;)
-ZMK_BEHAVIOR(fn_plus, mod_morph, bindings = <&kp PLUS>, <&kp F12>; mods = <(MOD_LSFT|MOD_RSFT)>;)
+ZMK_BEHAVIOR(fn_dllr, mod_morph, bindings = <&kp DLLR>, <&kp F10>; mods = <(MOD_LSFT|MOD_RSFT)>;)
+ZMK_BEHAVIOR(fn_dot, mod_morph, bindings = <&kp DOT>, <&kp F11>; mods = <(MOD_LSFT|MOD_RSFT)>;)
+ZMK_BEHAVIOR(fn_pcnt, mod_morph, bindings = <&kp PRCNT>, <&kp F12>; mods = <(MOD_LSFT|MOD_RSFT)>;)
 ZMK_BEHAVIOR(fn_ast, mod_morph, bindings = <&kp ASTRK>, <&kp INSERT>; mods = <(MOD_LSFT|MOD_RSFT)>;)
 ZMK_BEHAVIOR(fn_fslh, mod_morph, bindings = <&kp FSLH>, <&kp CAPS>; mods = <(MOD_LSFT|MOD_RSFT)>;)
 
@@ -249,29 +249,29 @@ ZMK_BEHAVIOR(dyn_macro_morph, mod_morph,
         };
         num_layer {
             bindings = <
-            &swapper  &kp HASH  &kp DLLR   &kp PRCNT  &kp CARET  &fn_plus   &fn_6  &fn_7  &fn_8  &fn_ast 
-            SK_LGUI   SK_LALT   SK(LCTL)   SK(LSFT)   &kp DOT    &fn_eql    &fn_0  &fn_1  &fn_2  &fn_9 
-            S_UNDO    S_CUT     S_COPY     S_PASTE    S_REDO     &fn_mins   &fn_3  &fn_4  &fn_5  &fn_fslh
+            &swapper  &kp PLUS  &kp MINUS  &kp EQUAL  &kp CARET  &fn_pcnt   &fn_6  &fn_7  &fn_8  &fn_ast 
+            SK_LGUI   SK_LALT   SK(LCTL)   SK(LSFT)   &kp HASH   &fn_dot    &fn_0  &fn_1  &fn_2  &fn_9 
+            S_UNDO    S_CUT     S_COPY     S_PASTE    S_REDO     &fn_dllr   &fn_3  &fn_4  &fn_5  &fn_fslh
                                 XXX        ___        ___        &kp SPACE  ___    XXX 
             >;
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp UP DOWN>;
         };
         sym_layer {
             bindings = <
-            &kp TILDE     &kp UNDER   &kp LBKT  &kp RBKT  &kp PIPE      &kp HOME  &kp PG_DN  &kp PG_UP  &kp END    &dyn_macro_morph
-            H_LGUI(GRAVE) H_LALT(AT)  &kp LPAR  &kp RPAR  H_LCTL(AMPS)  &kp LEFT  &kp DOWN   &kp UP     &kp RIGHT  &kp ENTER 
-            &kp BSLH      &kp LT      &kp LBRC  &kp RBRC  &kp GT        &kp ESC   &kp BSPC   &kp DEL    &kp TAB    &key_repeat 
-                                      ___       ___       XXX         ___         ___        XXX 
+            &kp TILDE     &kp LT        &kp LBKT  &kp RBKT  &kp GT        &kp HOME  &kp PG_DN  &kp PG_UP  &kp END    &dyn_macro_morph
+            H_LGUI(GRAVE) H_LALT(UNDER) &kp LPAR  &kp RPAR  H_LCTL(AMPS)  &kp LEFT  &kp DOWN   &kp UP     &kp RIGHT  &kp ENTER 
+            &kp BSLH      &kp AT        &kp LBRC  &kp RBRC  &kp PIPE      &kp ESC   &kp BSPC   &kp DEL    &kp TAB    &key_repeat 
+                                        ___       ___       XXX           ___       ___        XXX 
             >;
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp UP DOWN>;
         };
  
         merge_layer {
             bindings = <
-            &swapper XXX          XXX          XXX         XXX        &kp HOME  &kp PG_DN  &kp PG_UP  &kp END    &dyn_macro_morph
-            SK_LGUI  SK_LALT      SK(LCTL)     SK(LSFT)    SMRT_MED   &kp LEFT  &kp DOWN   &kp UP     &kp RIGHT  &kp ENTER 
-            S_UNDO   S_CUT        S_COPY       S_PASTE     S_REDO     &kp ESC   &kp BSPC   &kp DEL    &kp TAB    &key_repeat
-                                  XXX          ___         ___        ___       ___        XXX 
+            &swapper &kp PLUS  &kp MINUS  &kp EQUAL  &kp CARET  &kp HOME  &kp PG_DN  &kp PG_UP  &kp END    &dyn_macro_morph
+            SK_LGUI  SK_LALT   SK(LCTL)   SK(LSFT)   SMRT_MED   &kp LEFT  &kp DOWN   &kp UP     &kp RIGHT  &kp ENTER 
+            S_UNDO   S_CUT     S_COPY     S_PASTE    S_REDO     &kp ESC   &kp BSPC   &kp DEL    &kp TAB    &key_repeat
+                               XXX        ___        ___        ___       ___        XXX 
             >;
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp UP DOWN>;
         };
@@ -409,27 +409,27 @@ SYM_THUMB_COMBO(RB4, &key_repeat)
 // right thumb combos with left hand SYM layer 
 #define SYM_THUMB_CROSS_COMBO(keypos, bindings) THUMB_LAYER_COMBO(SYM, RH1, BASE, keypos, bindings)
 SYM_THUMB_CROSS_COMBO(LT4, &kp TILDE)
-SYM_THUMB_CROSS_COMBO(LT3, &kp PIPE)
-SYM_THUMB_CROSS_COMBO(LT2, &kp UNDER)
+SYM_THUMB_CROSS_COMBO(LT3, &kp LT)
+SYM_THUMB_CROSS_COMBO(LT2, &kp GT)
 SYM_THUMB_CROSS_COMBO(LT1, &kp LBKT)
 SYM_THUMB_CROSS_COMBO(LT0, &kp RBKT)
 SYM_THUMB_CROSS_COMBO(LM4, &kp GRAVE)
 SYM_THUMB_CROSS_COMBO(LM3, &kp AMPS)
-SYM_THUMB_CROSS_COMBO(LM2, &kp AT)
+SYM_THUMB_CROSS_COMBO(LM2, &kp UNDER)
 SYM_THUMB_CROSS_COMBO(LM1, &kp LPAR)
 SYM_THUMB_CROSS_COMBO(LM0, &kp RPAR)
 SYM_THUMB_CROSS_COMBO(LB4, &kp BSLH)
-SYM_THUMB_CROSS_COMBO(LB3, &kp LT)
-SYM_THUMB_CROSS_COMBO(LB2, &kp GT)
+SYM_THUMB_CROSS_COMBO(LB3, &kp PIPE)
+SYM_THUMB_CROSS_COMBO(LB2, &kp AT)
 SYM_THUMB_CROSS_COMBO(LB1, &kp LBRC)
 SYM_THUMB_CROSS_COMBO(LB0, &kp RBRC)
 
 // left thumb combos with left hand NUM layer
 #define NUM_THUMB_COMBO(keypos, bindings) THUMB_LAYER_COMBO(NUM, LH1, BASE SYM, keypos, bindings)
 NUM_THUMB_COMBO(LT4, &swapper)
-NUM_THUMB_COMBO(LT3, &kp HASH)
-NUM_THUMB_COMBO(LT2, &kp DLLR)
-NUM_THUMB_COMBO(LT1, &kp PRCNT)
+NUM_THUMB_COMBO(LT3, &kp PLUS)
+NUM_THUMB_COMBO(LT2, &kp MINUS)
+NUM_THUMB_COMBO(LT1, &kp EQUAL)
 NUM_THUMB_COMBO(LT0, &kp CARET)
 NUM_THUMB_COMBO(LM4, SK_LGUI)
 NUM_THUMB_COMBO(LM3, SK_LALT)
@@ -444,17 +444,17 @@ NUM_THUMB_COMBO(LB0, S_REDO)
 
 // left thumb combos with right hand NUM layer
 #define NUM_THUMB_CROSS_COMBO(keypos, bindings) THUMB_LAYER_COMBO(NUM, LH1, BASE, keypos, bindings)
-NUM_THUMB_CROSS_COMBO(RT0, &fn_plus)
+NUM_THUMB_CROSS_COMBO(RT0, &fn_pcnt)
 NUM_THUMB_CROSS_COMBO(RT1, &fn_6)
 NUM_THUMB_CROSS_COMBO(RT2, &fn_7)
 NUM_THUMB_CROSS_COMBO(RT3, &fn_8)
 NUM_THUMB_CROSS_COMBO(RT4, &fn_ast)
-NUM_THUMB_CROSS_COMBO(RM0, &fn_eql)
+NUM_THUMB_CROSS_COMBO(RM0, &fn_dot)
 NUM_THUMB_CROSS_COMBO(RM1, &fn_0)
 NUM_THUMB_CROSS_COMBO(RM2, &fn_1)
 NUM_THUMB_CROSS_COMBO(RM3, &fn_2)
 NUM_THUMB_CROSS_COMBO(RM4, &fn_9)
-NUM_THUMB_CROSS_COMBO(RB0, &fn_mins)
+NUM_THUMB_CROSS_COMBO(RB0, &fn_dllr)
 NUM_THUMB_CROSS_COMBO(RB1, &fn_3)
 NUM_THUMB_CROSS_COMBO(RB2, &fn_4)
 NUM_THUMB_CROSS_COMBO(RB3, &fn_5)
