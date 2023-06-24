@@ -102,9 +102,9 @@ need to remember the active layer.
 
 For instance, pressing modifiers or arrows should each have a single motion, and
 combining them (on separate hands) should yield modded arrows without executing
-actions separately. Another example is when navigating with sym/nav, like selecting
-a word with shift+arrows, you can just apply the "copy" muscle memory to copy without 
-needing to remember to first let go of sym/nav.
+actions separately. Another example is when navigating with sym/nav, like
+selecting a word with shift+arrows, you can just apply the "copy" muscle memory
+to copy without needing to remember to first let go of sym/nav.
 
 ### 🖱️ Facilitate One-Handed Usage
 

@@ -280,7 +280,7 @@ ZMK_BEHAVIOR(dyn_macro_morph, mod_morph,
             bindings = <
             ___       ___       ___        ___        ___    &kp C_PREV      &kp C_VOL_DN  &kp C_VOL_UP  &kp C_NEXT     &kp C_PP 
             SK_LGUI   SK_LALT   SK(LCTL)   SK(LSFT)   ___    &bt BT_SEL 0    &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_CLR     &kp C_MENU
-            ___       ___       ___        ___        ___    &kp C_BKLT_TOG  &kp C_BRI_DN  &kp C_BRI_UP  &kp C_BRI_MAX  &kp CAPS
+            ___       ___       ___        ___        ___    &kp C_BKLT_MIN  &kp C_BRI_DN  &kp C_BRI_UP  &kp C_BRI_MAX  &kp CAPS
                                 ___        ___        ___    ___             ___           ___ 
             >;
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp UP DOWN>;
@@ -308,7 +308,6 @@ GLOBAL_COMBO(dot_spc, LH0 RH0, &dot_spc)
 
 // combos on the numpad
 #define NUM_COMBO(name, keypos, bindings) ZMK_COMBO(name, bindings, keypos, NUM, 50)
-NUM_COMBO(dot, RM0 RM1, &kp DOT)
 NUM_COMBO(esc, LT3 LT2, &kp ESC)
 NUM_COMBO(tab, LT2 LT1, &kp TAB)
 NUM_COMBO(gui, LB3 LB2, &kp LGUI)
@@ -316,6 +315,11 @@ NUM_COMBO(ent, LB2 LB1, &kp ENTER)
 NUM_COMBO(lpar, LT2 LM2, &kp LPAR)
 NUM_COMBO(rpar, LT1 LM1, &kp RPAR)
 NUM_COMBO(x, LM3 LB3, &kp X)
+
+// combos on media
+#define MEDIA_COMBO(name, keypos, bindings) ZMK_COMBO(name, bindings, keypos, MEDIA, 50)
+NUM_COMBO(mute, RT1 RT2, &kp C_MUTE)
+NUM_COMBO(display_off, RB1 RB2, &kp C_BKLT_TOG)
 
 // vertical sfb combos
 #define VERTICAL_COMBO(keypos, key1, key2) \
@@ -396,11 +400,11 @@ SYM_THUMB_COMBO(RM1, &kp DOWN)
 SYM_THUMB_COMBO(RM2, &kp UP)
 SYM_THUMB_COMBO(RM3, &kp RIGHT)
 SYM_THUMB_COMBO(RM4, &kp ENTER)
-SYM_THUMB_COMBO(RB0, &key_repeat) 
+SYM_THUMB_COMBO(RB0, &kp ESC) 
 SYM_THUMB_COMBO(RB1, &kp BSPC)
 SYM_THUMB_COMBO(RB2, &kp DEL)
 SYM_THUMB_COMBO(RB3, &kp TAB)
-SYM_THUMB_COMBO(RB4, &kp ESC)
+SYM_THUMB_COMBO(RB4, &key_repeat)
 
 // right thumb combos with left hand SYM layer 
 #define SYM_THUMB_CROSS_COMBO(keypos, bindings) THUMB_LAYER_COMBO(SYM, RH1, BASE, keypos, bindings)
@@ -440,21 +444,21 @@ NUM_THUMB_COMBO(LB0, S_REDO)
 
 // left thumb combos with right hand NUM layer
 #define NUM_THUMB_CROSS_COMBO(keypos, bindings) THUMB_LAYER_COMBO(NUM, LH1, BASE, keypos, bindings)
-NUM_THUMB_CROSS_COMBO(RT0, &kp PLUS)
-NUM_THUMB_CROSS_COMBO(RT1, &kp N6)
-NUM_THUMB_CROSS_COMBO(RT2, &kp N7)
-NUM_THUMB_CROSS_COMBO(RT3, &kp N8)
-NUM_THUMB_CROSS_COMBO(RT4, &kp ASTRK)
-NUM_THUMB_CROSS_COMBO(RM0, &kp EQUAL)
-NUM_THUMB_CROSS_COMBO(RM1, &kp N0)
-NUM_THUMB_CROSS_COMBO(RM2, &kp N1)
-NUM_THUMB_CROSS_COMBO(RM3, &kp N2)
-NUM_THUMB_CROSS_COMBO(RM4, &kp N9)
-NUM_THUMB_CROSS_COMBO(RB0, &kp MINUS)
-NUM_THUMB_CROSS_COMBO(RB1, &kp N3)
-NUM_THUMB_CROSS_COMBO(RB2, &kp N4)
-NUM_THUMB_CROSS_COMBO(RB3, &kp N5)
-NUM_THUMB_CROSS_COMBO(RB4, &kp SLASH)
+NUM_THUMB_CROSS_COMBO(RT0, &fn_plus)
+NUM_THUMB_CROSS_COMBO(RT1, &fn_6)
+NUM_THUMB_CROSS_COMBO(RT2, &fn_7)
+NUM_THUMB_CROSS_COMBO(RT3, &fn_8)
+NUM_THUMB_CROSS_COMBO(RT4, &fn_ast)
+NUM_THUMB_CROSS_COMBO(RM0, &fn_eql)
+NUM_THUMB_CROSS_COMBO(RM1, &fn_0)
+NUM_THUMB_CROSS_COMBO(RM2, &fn_1)
+NUM_THUMB_CROSS_COMBO(RM3, &fn_2)
+NUM_THUMB_CROSS_COMBO(RM4, &fn_9)
+NUM_THUMB_CROSS_COMBO(RB0, &fn_mins)
+NUM_THUMB_CROSS_COMBO(RB1, &fn_3)
+NUM_THUMB_CROSS_COMBO(RB2, &fn_4)
+NUM_THUMB_CROSS_COMBO(RB3, &fn_5)
+NUM_THUMB_CROSS_COMBO(RB4, &fn_fslh)
 
 // left thumb combos with both hands BASE layer
 #define SHFT_THUMB_COMBO(keypos, bindings) THUMB_COMBO_GENERAL(&kp, LSFT, LH0, BASE, keypos, bindings)
