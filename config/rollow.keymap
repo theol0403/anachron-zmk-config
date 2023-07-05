@@ -278,10 +278,10 @@ ZMK_BEHAVIOR(dyn_macro_morph, mod_morph,
 
         media_layer {
             bindings = <
-            ___       ___       ___        ___        ___    &kp C_PREV      &kp C_VOL_DN  &kp C_VOL_UP  &kp C_NEXT     &kp C_PP 
-            SK_LGUI   SK_LALT   SK(LCTL)   SK(LSFT)   ___    &bt BT_SEL 0    &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_CLR     &kp C_MENU
-            ___       ___       ___        ___        ___    &kp C_BKLT_MIN  &kp C_BRI_DN  &kp C_BRI_UP  &kp C_BRI_MAX  &kp CAPS
-                                ___        ___        ___    ___             ___           ___ 
+            ___       ___       ___        ___        ___    &kp C_PREV     &kp C_VOL_DN  &kp C_VOL_UP  &kp C_NEXT     &kp C_PP 
+            SK_LGUI   SK_LALT   SK(LCTL)   SK(LSFT)   ___    &bt BT_SEL 0   &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_CLR     &kp C_MENU
+            ___       ___       ___        ___        ___    &kp C_BRI_MIN  &kp C_BRI_DN  &kp C_BRI_UP  &kp C_BRI_MAX  &kp CAPS
+                                ___        ___        ___    ___            ___           ___ 
             >;
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp UP DOWN>;
         };
